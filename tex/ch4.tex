@@ -35,7 +35,7 @@
 
 \subsection{参数响应曲线}
 
-为说明数据绘图的正文写法，图~\ref{fig:response-comparison}用一组小型模拟数据比较观测值和模型响应。曲线、坐标轴和图例均由 PGFPlots 生成，图题、编号、上下间距和页眉页脚由论文模板统一处理。
+为说明数据绘图在正文中的表达方式，图~\ref{fig:response-comparison}用一组小型模拟数据比较观测值和模型响应。图题、编号、上下间距和页眉页脚由论文模板统一处理。
 \begin{figure}[htbp]
   \centering
   \begin{tikzpicture}
@@ -61,7 +61,7 @@
 
 从图~\ref{fig:response-comparison}可见，示例模型在中间时段的响应与观测值存在明显差异，后续分析应结合参数区间、残差图和边界条件判断误差来源。由于数据是模拟的，这张图只展示结果段的表达方式，不支持对真实装置性能的结论。
 
-同一数据还可以用于演示 PGFPlots 图形的复用方式。图~\ref{fig:pgfplots-response}用相同的观测值与模型响应生成独立矢量曲线；LaTeX 示例把绘图命令直接写入正文，使图内文字继承论文的正文字体和数学字体。
+为便于检查数据表达的一致性，图~\ref{fig:response-curve}再次展示相同的观测值与模型响应。图中散点对应观测值，实线对应模型响应，坐标轴标签和图例采用与正文一致的符号体系。
 \begin{figure}[htbp]
   \centering
   \begin{tikzpicture}
@@ -81,13 +81,13 @@
       \addlegendentry{模型响应}
     \end{axis}
   \end{tikzpicture}
-  \caption{统一字体的 PGFPlots 响应曲线}
-  \label{fig:pgfplots-response}
+  \caption{观测值与模型响应曲线（模拟数据）}
+  \label{fig:response-curve}
 \end{figure}
 
-无论使用哪一种绘图工具，都应在生成命令中固定字体、字号和线宽，并在图注中说明数据来源与处理方法。
+图形中应保持字体、字号和线宽一致，并在图注中说明数据来源与处理方法。
 
-同一组数据还可以从空间分布、方向场和区间估计三个角度观察。图~\ref{fig:pgfplots-diagnostics}把状态等高线、色彩图、局部方向场和预测区间带组合在一起：前两者强调状态空间的分布，矢量场强调局部变化方向，区间带明确表达不确定性范围。真实研究中，这组图可以替换为实验网格或仿真输出。
+同一组数据还可以从空间分布、方向场和区间估计三个角度观察。图~\ref{fig:diagnostics-panel}把状态等高线、色彩图、局部方向场和预测区间带组合在一起：前两者强调状态空间的分布，矢量场强调局部变化方向，区间带明确表达不确定性范围。真实研究中，这组图可以替换为实验网格或仿真输出。
 \begin{figure}[htbp]
   \centering
   \subfigure[状态等高线]{
@@ -167,12 +167,12 @@
       \end{axis}
     \end{tikzpicture}}
   \caption{状态空间与不确定性传播的诊断图组}
-  \label{fig:pgfplots-diagnostics}
+  \label{fig:diagnostics-panel}
 \end{figure}
 
-\subsection{PGFPlots 多子图排版示例}
+\subsection{多视图结果组织示例}
 
-当同一组实验需要同时展示响应曲线、散点关系、离散指标和预测区间时，可以将同一数据对象组织在一个总图中。图~\ref{fig:pgfplots-multi-panel}使用同一组模拟数据展示四种数据视图；几何结构和模块关系则在各自章节中单独组织，不把不同性质的图形混在一组里。
+当同一组实验需要同时展示响应曲线、散点关系、离散指标和预测区间时，可以将同一数据对象组织在一个总图中。图~\ref{fig:response-multipanel}使用同一组模拟数据展示四种数据视图；几何结构和模块关系则在各自章节中单独组织，不把不同性质的图形混在一组里。
 \begin{figure}[htbp]
   \centering
   \subfigure[观测与模型]{
@@ -223,7 +223,7 @@
       \end{axis}
     \end{tikzpicture}}
   \caption{同一模型的多视图数据表达}
-  \label{fig:pgfplots-multi-panel}
+  \label{fig:response-multipanel}
 \end{figure}
 
 \section{数值离散与误差分析}

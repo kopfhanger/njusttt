@@ -2,13 +2,19 @@
 
 本文研究超音速牛奶喷射与时间旅行两类问题的概率动力学描述与数值实现方法。这两类问题在物理机制上并不相同，但都面临同一建模困难：状态演化带有随机性，观测只能提供含噪的间接信息，模型本身还存在结构性偏差。现有研究多报告均值或峰值结果，对参数不确定性、数值误差与模型误差的分离讨论不足，也缺少统一的符号体系与验证流程。
 
-针对上述问题，本文把两类问题写成同一形式的状态空间模型：用状态方程描述演化过程，用观测方程描述测量过程，用转移概率和参数分布描述随机性，并在此基础上给出贝叶斯参数更新与区间估计的完整推导。为便于复用，本文把矩阵与范数、级数积分与极限、微分算子、概率分布与信息论记号等数学工具集中约定，并给出公式版式与编号规则。
+针对上述问题，本文采用“建模—推断—验证”的组织方式，并在区分研究对象的基础上共用状态空间表述。对于连续流体变量，状态方程描述喷射过程的演化，观测方程联系可测量量与模型状态；对于时间旅行示例，则以有限分支状态和转移概率表示给定理论假设下的演化。两者共用的是概率表示、参数推断与误差检验方法，并不意味着它们具有相同的物理机制，也不据此推断时间旅行在现实中的可行性。在此基础上，本文给出贝叶斯参数更新与区间估计的推导，并约定状态量、观测量、噪声、矩阵与范数、级数积分与极限、微分算子、概率分布和信息论记号，以便各章使用一致的符号和公式编号。
 
-在数值实现方面，本文采用有限差分格式离散空间导数，比较显式与隐式时间步进的稳定性与代价，用网格加密实验估计收敛阶并给出 Richardson 外推结果；参数估计部分给出最小二乘、岭回归与参数协方差的解析形式，并用蒙特卡洛与重要性采样处理无法解析求导的情形。对于区间估计，本文给出不依赖解析分布的重采样算法，并用相对半宽判断重采样次数是否足够。在结果表达方面，本文把总体偏差分解为格式误差、数据误差和模型误差三部分，并给出一组评价指标的定义与适用条件，避免用单一指标概括全部结论。
+在数值实现方面，本文采用有限差分格式离散空间导数，并比较显式与隐式时间步进在稳定性和计算代价上的差异；通过网格加密实验估计收敛阶，再用 Richardson 外推给出细网格结果的近似。参数估计部分整理最小二乘、岭回归与参数协方差的解析形式，并以蒙特卡洛和重要性采样处理无法直接解析求导的情形。对于区间估计，本文给出不依赖解析分布的重采样算法，以相对半宽作为判断重采样次数是否足够的指标。上述方法分别对应离散误差、参数不确定性和有限样本下的区间估计，避免将不同来源的偏差混为一个数值。
 
-算例结果表明：所给出的数值格式在网格加密时按预期阶数收敛，参数区间估计的覆盖率与名义水平接近，误差指标对异常值的敏感程度与理论预期一致。这些结果用于说明验证流程的完整性与可复现性，不作为工程设计依据。
+为说明各类检验之间的关系，本文将验证依据分为数值格式、参数估计和结果评价三个层次。格式检查需要交代网格序列、步长选择与稳定条件；参数估计需要说明先验和似然设定、样本规模及区间计算方式；结果评价则结合覆盖率、偏差、精密度与异常值影响进行讨论。每一层检验回答的问题不同，格式稳定或收敛并不能替代模型适用性的判断。各章据此将公式、数据与算法连接到具体结论，并标明示例输入、计算假设和结论范围，使读者可以沿方法链复核示例，也能判断现有证据尚未覆盖哪些条件。
 
-本文的主要工作是把两类问题整理到同一套建模、推断与验证规则之下，并固定公式、表格、图形与算法在文档中的书写方式。接入真实研究内容时，可以保留状态空间描述、区间估计流程与证据组织结构，替换具体数据与结论。
+在验证与结果表达方面，本文将总体偏差分解为格式误差、数据误差和模型误差，并给出多组评价指标及其适用条件。网格收敛性、稳定性与计算代价、区间覆盖率和异常值敏感性分别回答不同问题；只有把这些证据与对应的模型假设、参数范围和计算设置联系起来，才能判断结论在哪些条件下成立。本文据此安排公式、参数表、图形和算法之间的引用关系，使主要结论可以回溯到相应的计算步骤和评价依据。
+
+在误差处理上，参数分布用于表达输入和观测的不确定性，网格加密用于检查离散近似，模型误差则需要结合模型假设、替代结构与残差表现讨论。三类误差的证据来源不同，不能用一个综合指标替代逐项分析。本文因而将参数范围、样本规模、边界条件与计算设置纳入结果说明，并分别考察偏差、覆盖率、精密度和异常值敏感性。这一区分也限定了结论的力度：方法在给定算例中可复核，不等于模型在更广泛条件下已经有效。对于时间分支模型，区间只描述假设内部的概率变化，不能验证假设本身；对于连续射流示例，模拟设置下的收敛趋势也不能代替与真实测量结果的比较。
+
+示例算例表明，在本文给定的网格和参数设置下，数值格式随网格加密呈现预期的收敛趋势；区间估计覆盖率接近设定的名义水平，评价指标对异常值的敏感程度也与其定义相符。这些结果用于展示一套可复核的验证流程，并不构成真实实验结论或工程设计依据。尤其是时间分支模型属于理论性示例，其计算结果只说明给定假设下的概率推演方式。
+
+本文的主要工作是把问题描述、参数推断、数值验证和结果评价组织成连贯的方法链，并统一公式、表格、图形与算法的表达方式。研究范围仍受示例数据和模型设定限制，尚不能替代真实装置上的测量、校准和独立验证。将本框架用于实际研究时，应以可追溯的实验或仿真数据替换示例输入，重新核对参数范围、边界条件、误差来源与评价标准，并据此改写结论；可以保留的是状态空间描述、区间估计流程和证据组织结构，而不是本文的示例性数值结论。
 
 \keywords{超音速牛奶喷射、时间旅行、概率动力学、时空导航、逻辑变量回归、差分异质曲率}
 
@@ -19,11 +25,11 @@
 
 This dissertation studies probabilistic dynamics descriptions and their numerical implementation for two problems: supersonic milk jetting and time travel. Although the two problems differ in physical mechanism, they share the same modelling difficulty: state evolution is stochastic, observations provide only indirect and noisy information, and the model itself carries structural bias. Existing studies mostly report mean or peak values, rarely separate parametric uncertainty, numerical error, and model error, and seldom adopt a common notation or verification procedure.
 
-To address this, both problems are formulated as state-space models: a state equation describes the evolution, an observation equation describes the measurement, and transition probabilities together with parameter distributions describe the randomness. On this basis, a complete derivation of Bayesian parameter updating and interval estimation is given. Mathematical tools—matrices and norms, series, integrals and limits, differential operators, probability distributions, and information measures—are collected in one place, together with rules for formula layout and numbering.
+To address this, both problems are formulated as state-space models: a state equation describes the evolution, an observation equation describes the measurement, and transition probabilities together with parameter distributions describe the randomness. This shared representation is limited to probabilistic modeling, parameter inference, and uncertainty assessment; it does not treat the problems as physically equivalent or imply that time travel is feasible. On this basis, a complete derivation of Bayesian parameter updating and interval estimation is given. Mathematical tools—matrices and norms, series, integrals and limits, differential operators, probability distributions, and information measures—are collected in one place, together with rules for formula layout and numbering.
 
 For the numerical implementation, spatial derivatives are discretised with finite differences, and explicit and implicit time stepping are compared in terms of stability and cost. Convergence orders are estimated by mesh refinement and refined by Richardson extrapolation. Parameter estimation is presented in least-squares, ridge-regression, and covariance forms, while Monte Carlo and importance sampling handle cases without analytic derivatives. For interval estimation, a resampling algorithm that does not assume an analytic distribution is given, and the relative half-width is used to decide whether the resampling count is sufficient. Regarding the presentation of results, the total deviation is decomposed into discretisation, data, and model contributions, and a set of evaluation metrics is defined together with the conditions under which each is appropriate.
 
-Numerical examples show that the discretisation converges at the expected order under mesh refinement, that the coverage of the estimated intervals is close to the nominal level, and that the sensitivity of the metrics to outliers agrees with theoretical expectation. These results demonstrate the completeness and reproducibility of the verification procedure rather than providing a basis for engineering design.
+Illustrative numerical examples show that the discretisation converges at the expected order under mesh refinement, that the coverage of the estimated intervals is close to the nominal level, and that the sensitivity of the metrics to outliers agrees with theoretical expectation. These results demonstrate the completeness and reproducibility of the verification procedure; they are not experimental findings or a basis for engineering design. The time-branch model is a theoretical example and supports conclusions only under its stated assumptions.
 
 The main contribution is to organise the two problems under one set of modelling, inference, and verification rules, and to fix how formulas, tables, figures, and algorithms are laid out in the document. When adapting the template to a real study, the state-space description, the interval estimation procedure, and the evidence organisation can be retained while the data and conclusions are replaced.
 

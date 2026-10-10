@@ -221,21 +221,48 @@
 \begin{figure}[htbp]
   \centering
   \begin{tikzpicture}[
-    box/.style={draw,rounded corners,align=center,text width=0.82\textwidth,
-      minimum height=11mm,inner sep=3pt},
-    flow/.style={-{Stealth[length=2mm]},thick}
+    phase/.style={draw,rounded corners=2pt,minimum width=15.2cm,
+      minimum height=1.9cm,inner sep=0pt},
+    chapter/.style={draw=gray!55,rounded corners=2pt,fill=white,
+      minimum height=1.58cm,inner sep=1.2mm,align=center},
+    flow/.style={-{Stealth[length=2mm]},thick,draw=gray!65}
   ]
-    \node[box,fill=blue!7] (c1) {\textbf{第 1 章\quad 绪论}\\研究问题、技术路线与全文框架\\问题定义 · 技术路线 · 符号约定};
-    \node[box,fill=teal!7,below=4mm of c1] (c2) {\textbf{第 2 章\quad 超音速喷射的概率动力学}\\状态方程、参数分布与数学工具\\状态模型 · 参数表 · 公式体系};
-    \node[box,fill=teal!7,below=4mm of c2] (c3) {\textbf{第 3 章\quad 时间旅行的概率动力学}\\理论基础、分支模型与转移概率\\理论基础 · 分支模型 · 概率推断};
-    \node[box,fill=yellow!12,below=4mm of c3] (c4) {\textbf{第 4 章\quad 两者的异构耦合关系}\\数值离散、参数估计与模拟结果\\离散格式 · 参数估计 · 数值证据};
-    \node[box,fill=yellow!12,below=4mm of c4] (c5) {\textbf{第 5 章\quad 应用前景与评估}\\处理算法、评估指标与工程边界\\处理算法 · 评价指标 · 工程边界};
-    \node[box,fill=blue!7,below=4mm of c5] (c6) {\textbf{第 6 章\quad 总结与展望}\\量化结论、局限性与后续工作\\量化结论 · 局限性 · 后续工作};
-    \draw[flow] (c1.south)--(c2.north);
-    \draw[flow] (c2.south)--(c3.north);
-    \draw[flow] (c3.south)--(c4.north);
-    \draw[flow] (c4.south)--(c5.north);
-    \draw[flow] (c5.south)--(c6.north);
+    \node[phase,draw=blue!45,fill=blue!3] (p1) at (7.6,2.35) {};
+    \node[phase,draw=teal!45,fill=teal!3] (p2) at (7.6,0) {};
+    \node[phase,draw=orange!55,fill=yellow!7] (p3) at (7.6,-2.35) {};
+
+    \node[font=\bfseries\small,text=blue!60!black,text width=2.35cm,align=center]
+      (s1) at (1.3,2.35) {提出问题};
+    \node[font=\bfseries\small,text=teal!60!black,text width=2.35cm,align=center]
+      (s2) at (1.3,0) {建模与推断};
+    \node[font=\bfseries\small,text=orange!65!black,text width=2.35cm,align=center]
+      (s3) at (1.3,-2.35) {验证与应用};
+
+    \node[chapter,text width=11.8cm] (c1) at (8.9,2.35)
+      {\textbf{\small 第 1 章\quad 绪论}\\[-1pt]
+       {\footnotesize 研究问题 · 技术路线 · 全文框架 · 符号约定}};
+
+    \node[chapter,text width=5.75cm] (c2) at (5.75,0)
+      {\textbf{\footnotesize 第 2 章\quad 超音速喷射的概率动力学}\\[-1pt]
+       {\scriptsize 状态方程 · 参数分布 · 数学工具 · 公式体系}};
+    \node[chapter,text width=5.75cm] (c3) at (12,0)
+      {\textbf{\footnotesize 第 3 章\quad 时间旅行的概率动力学}\\[-1pt]
+       {\scriptsize 理论基础 · 分支模型 · 转移概率 · 概率推断}};
+
+    \node[chapter,text width=3.68cm] (c4) at (4.68,-2.35)
+      {\textbf{\footnotesize 第 4 章\quad 异构耦合分析}\\[-1pt]
+       {\scriptsize 数值离散 · 参数估计 · 模拟结果}};
+    \node[chapter,text width=3.68cm] (c5) at (8.94,-2.35)
+      {\textbf{\footnotesize 第 5 章\quad 应用前景与评估}\\[-1pt]
+       {\scriptsize 处理算法 · 评价指标 · 工程边界}};
+    \node[chapter,text width=3.68cm] (c6) at (13.2,-2.35)
+      {\textbf{\footnotesize 第 6 章\quad 总结与展望}\\[-1pt]
+       {\scriptsize 量化结论 · 局限性 · 后续工作}};
+
+    \draw[flow] (1.3,1.4)--(1.3,0.95);
+    \draw[flow] (1.3,-0.95)--(1.3,-1.4);
+    \draw[flow] (c4.east)--(c5.west);
+    \draw[flow] (c5.east)--(c6.west);
   \end{tikzpicture}
   \caption{论文结构框架}
   \label{fig:framework}
