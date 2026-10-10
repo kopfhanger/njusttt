@@ -65,24 +65,22 @@
 \end{equation}
 式~\eqref{eq:physica-notation}只展示记号形式；实际研究中应根据张量的坐标变换规则和物理量的量纲给出完整推导。
 
-当示意图需要同时包含结构关系和数学标注时，可以使用 TikZ 直接绘制矢量图。图~\ref{fig:state-space-diagram}中，节点表达状态与观测量，箭头表示信息流向；图内公式与式~\eqref{eq:state-space}采用相同记号。矢量图便于放大、打印和后续编辑。
+当示意图需要同时包含结构关系和数学标注时，可以使用 TikZ 直接绘制矢量图。图~\ref{fig:state-space-diagram}中，观测量进入状态更新，再由贝叶斯更新得到参数后验；预测结果返回下一轮观测。图内公式与本章状态更新记号一致。矢量图便于放大、打印和后续编辑。
 \begin{figure}[htbp]
   \centering
   \begin{tikzpicture}[
-    node distance=12mm,
-    block/.style={draw,rounded corners,align=center,minimum width=30mm,minimum height=13mm},
-    link/.style={-{Stealth[length=2mm]},thick}
+    node distance=13mm and 16mm,
+    box/.style={draw,rounded corners=2pt,minimum width=34mm,minimum height=12mm,align=center,line width=.55pt,font=\small},
+    arrow/.style={-{Stealth[length=2.1mm]},line width=.6pt}
   ]
-    \node[block,fill=blue!7] (input) {控制量\\$\bm{u}_k$};
-    \node[block,fill=teal!7,right=of input] (state) {状态更新\\$\bm{x}_{k+1}=A\bm{x}_k+B\bm{u}_k+\bm{w}_k$};
-    \node[block,fill=yellow!12,right=of state] (obs) {观测\\$\bm{y}_{k+1}=C\bm{x}_{k+1}+\bm{v}_{k+1}$};
-    \node[block,fill=orange!10,below=of state] (estimate) {状态估计\\$\hat{\bm{x}}_{k+1}$};
-    \draw[link] (input)--(state);
-    \draw[link] (state)--(obs);
-    \draw[link] (obs)--(estimate);
-    \draw[link] (estimate.west)-| (input.south);
+    \node[box,fill=gray!6] (obs) {观测量\\$\bm{y}_k$};
+    \node[box,fill=gray!6,right=of obs] (state) {状态更新\\$\bm{x}_{k+1}=A\bm{x}_k+\bm{w}_k$};
+    \node[box,fill=gray!6,right=of state] (post) {参数后验\\$p(\theta\mid\bm{y}_{1:k})$};
+    \draw[arrow] (obs)--node[above,font=\scriptsize] {$H\bm{x}_k+\bm{v}_k$}(state);
+    \draw[arrow] (state)--node[above,font=\scriptsize] {贝叶斯更新}(post);
+    \draw[arrow] (post.south)--++(0,-10mm)-|node[pos=.48,below,font=\scriptsize] {预测}(obs.south);
   \end{tikzpicture}
-  \caption{统一字体的状态空间示意图}
+  \caption{统一字体的 TikZ 状态空间示意图}
   \label{fig:state-space-diagram}
 \end{figure}
 
@@ -90,49 +88,64 @@
 
 在参数分析中，可以用概率分布描述喷射速度和喷射效率的离散性。设出口速度观测值为 $v_i$，样本均值和样本方差分别为 $\bar{v}$ 与 $s_v^2$，则重复实验可以用置信区间报告，而不应只报告一个看似精确的平均值。真实论文应给出实验装置、数据来源、计算方法及其误差分析。
 
-本模板推荐在真实论文中把实验量与单位绑定书写。例如，喷嘴出口速度可以写成 $340~\mathrm{m\,s^{-1}}$，测量误差可以写成 $(340\pm5)~\mathrm{m\,s^{-1}}$，有效工作区间可以写成 $0.20$--$0.80~\mathrm{mm}$。这样单位、数字和误差不会因为手工空格不同而在各章节中产生不一致的视觉结果。
+当前示例使用模板本地字体和显式单位文本，避免把存在兼容性问题的 Metro 宏包带入默认论文构建。LaTeX 版本可用 `siunitx` 把数值与单位绑定书写：例如出口速度写成 $340~\mathrm{m\,s^{-1}}$，测量误差写成 $(340\pm5)~\mathrm{m\,s^{-1}}$，有效工作区间写成 $0.20$--$0.80~\mathrm{mm}$。这样单位、数字和误差不会因为手工空格不同而在各章节中产生不一致的视觉结果。
+
+在真实论文中，实验量应始终与单位绑定。例如，喷嘴出口速度、测量误差和有效工作区间可以分别用 `\qty{340}{\meter\per\second}`、`\qty{340 \pm 5}{\meter\per\second}` 和 `\qtyrange{0.20}{0.80}{\milli\meter}` 表示。应先确认所用单位宏包的版本与模板兼容，再将同一接口用于全文。
 
 为了避免只展示平均值，本章再给出一组小型数据诊断图。折线图带有误差线，散点图用颜色表达第三个量，柱状图适合汇总离散指标，箱线图则用于比较重复实验的分布。图~\ref{fig:ch2-diagnostics}中的数据是排版示例，正式论文中应替换为真实观测值，并在正文中解释误差来源。
 \begin{figure}[htbp]
   \centering
   \subfigure[误差线折线图]{
-    \begin{tikzpicture}[scale=0.55]
-      \draw[->] (0,0)--(5,0) node[right] {$x$};
-      \draw[->] (0,0)--(0,3) node[above] {$y$};
-      \foreach \x/\y/\e in {0.5/1.0/0.3,1.3/1.5/0.25,2.1/1.3/0.35,2.9/2.0/0.25,3.7/2.35/0.3,4.5/2.6/0.25}{
-        \draw[blue] (\x,\y-\e)--(\x,\y+\e);
-        \draw[blue] (\x-0.08,\y-\e)--(\x+0.08,\y-\e);
-        \draw[blue] (\x-0.08,\y+\e)--(\x+0.08,\y+\e);
-        \fill[blue] (\x,\y) circle (1.6pt);
-      }
-      \draw[blue,thick] (0.5,1.0)--(1.3,1.5)--(2.1,1.3)--(2.9,2.0)--(3.7,2.35)--(4.5,2.6);
+    \begin{tikzpicture}
+      \begin{axis}[width=.46\textwidth,height=3.5cm,xmin=0,xmax=5,ymin=0.8,ymax=3.2,
+        xlabel={$x$},ylabel={$y$},tick label style={font=\scriptsize},
+        label style={font=\scriptsize},grid=major,grid style={black!12}]
+        \addplot+[blue,mark=*,error bars/.cd,y dir=both,y explicit]
+          coordinates {(0,1.2) +- (0,0.15) (1,1.8) +- (0,0.12) (2,1.5) +- (0,0.18)
+                       (3,2.2) +- (0,0.15) (4,2.6) +- (0,0.20) (5,2.9) +- (0,0.16)};
+      \end{axis}
     \end{tikzpicture}}
   \hfill
   \subfigure[彩色散点图]{
-    \begin{tikzpicture}[scale=0.55]
-      \draw[->] (0,0)--(5,0) node[right] {$x$};
-      \draw[->] (0,0)--(0,3) node[above] {$y$};
-      \foreach \x/\y/\c in {0.6/0.8/blue,1.3/1.5/cyan,2.0/1.2/green,2.8/2.0/yellow,3.6/2.3/orange,4.4/2.7/red}
-        \fill[\c] (\x,\y) circle (2.4pt);
+    \begin{tikzpicture}
+      \begin{axis}[width=.46\textwidth,height=3.5cm,xmin=-.2,xmax=5.2,ymin=.8,ymax=3.2,
+        xlabel={$x$},ylabel={$y$},tick label style={font=\scriptsize},
+        label style={font=\scriptsize},grid=major,grid style={black!12},
+        colormap/viridis,colorbar,colorbar style={width=1.5mm,tick label style={font=\tiny}}]
+        \addplot[only marks,scatter,point meta=explicit,mark=*,mark size=1.6pt]
+          table[meta=c,row sep=crcr] {
+            x y c\\
+            0 1.2 1\\
+            1 1.8 2\\
+            2 1.5 3\\
+            3 2.2 4\\
+            4 2.6 5\\
+            5 2.9 6\\
+          };
+      \end{axis}
     \end{tikzpicture}}
   \\
   \subfigure[指标柱状图]{
-    \begin{tikzpicture}[scale=0.55]
-      \draw[->] (0,0)--(5,0);
-      \draw[->] (0,0)--(0,3);
-      \foreach \x/\h in {0.7/1.2,1.7/1.9,2.7/1.5,3.7/2.4}
-        \fill[teal!55] (\x,0) rectangle +(0.55,\h);
+    \begin{tikzpicture}
+      \begin{axis}[width=.46\textwidth,height=3.5cm,ymin=0,ymax=3.0,
+        ybar,bar width=8pt,symbolic x coords={1,2,3,4},xtick=data,
+        xlabel={指标},ylabel={数值},tick label style={font=\scriptsize},
+        label style={font=\scriptsize},grid=major,grid style={black!12},
+        nodes near coords, nodes near coords style={font=\tiny}]
+        \addplot[fill=teal!55,draw=teal!70!black] coordinates {(1,1.3) (2,2.1) (3,1.7) (4,2.6)};
+      \end{axis}
     \end{tikzpicture}}
   \hfill
   \subfigure[重复实验分布]{
-    \begin{tikzpicture}[scale=0.55]
-      \draw[->] (0,0)--(5,0);
-      \draw[->] (0,0)--(0,3);
-      \foreach \x/\a/\b/\c in {1/0.6/1.2/1.8,2/0.9/1.5/2.2,3/0.7/1.7/2.5,4/1.1/1.9/2.7}{
-        \draw[thick] (\x,\a)--(\x,\c);
-        \draw[thick,fill=blue!12] (\x-0.25,\a+0.4) rectangle (\x+0.25,\b);
-        \draw[thick] (\x-0.25,1.45)--(\x+0.25,1.45);
-      }
+    \begin{tikzpicture}
+      \begin{axis}[width=.46\textwidth,height=3.5cm,ymin=.8,ymax=3.2,
+        boxplot/draw direction=y,xtick={1,2,3},xticklabels={A,B,C},
+        xlabel={重复实验组},ylabel={观测值},tick label style={font=\scriptsize},
+        label style={font=\scriptsize},grid=major,grid style={black!12}]
+        \addplot+[boxplot prepared={lower whisker=1.0,lower quartile=1.3,median=1.6,upper quartile=2.2,upper whisker=2.8},fill=blue!15] coordinates {};
+        \addplot+[boxplot prepared={lower whisker=1.4,lower quartile=1.8,median=2.1,upper quartile=2.55,upper whisker=3.0},fill=teal!15] coordinates {};
+        \addplot+[boxplot prepared={lower whisker=1.1,lower quartile=1.65,median=2.0,upper quartile=2.35,upper whisker=2.9},fill=orange!18] coordinates {};
+      \end{axis}
     \end{tikzpicture}}
   \caption{重复实验数据的诊断图组}
   \label{fig:ch2-diagnostics}

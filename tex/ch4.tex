@@ -14,127 +14,216 @@
 
 \subsection{结构关系图}
 
-图~\ref{fig:cetz-structure}说明数据、模型和预测结果之间的依赖关系。箭头使用黑色线条表示方向，节点颜色只承担分组功能；这种做法适合在论文黑白打印时保持方向关系清楚。
+图~\ref{fig:tikz-structure}说明数据、模型和预测结果之间的依赖关系。箭头使用黑色线条表示方向，节点颜色只承担分组功能；这种做法适合在论文黑白打印时保持方向关系清楚。
 \begin{figure}[htbp]
   \centering
   \begin{tikzpicture}[>=Stealth,node distance=14mm,
     block/.style={draw,rounded corners,minimum width=32mm,minimum height=12mm,align=center}]
-    \node[block,fill=blue!7] (obs) {观测数据\\$\bm{y}_{1:n}$};
-    \node[block,fill=teal!7,right=of obs] (model) {概率模型\\$\theta,\bm{A},\bm{Q}$};
-    \node[block,fill=yellow!12,right=of model] (pred) {预测结果\\$\hat{\bm{y}}_{n+1}$};
+    \node[block,fill=blue!7] (obs) {观测数据};
+    \node[block,fill=teal!7,right=of obs] (model) {概率模型};
+    \node[block,fill=yellow!12,right=of model] (pred) {预测结果};
     \draw[-{Stealth},thick] (obs)--(model);
     \draw[-{Stealth},thick] (model)--(pred);
-    \draw[-{Stealth},thick] (pred.south) to[bend right=30] node[below] {误差诊断} (obs.south);
   \end{tikzpicture}
   \caption{综合模型的结构关系图}
-  \label{fig:cetz-structure}
+  \label{fig:tikz-structure}
 \end{figure}
 
-图~\ref{fig:cetz-structure}不是结果图，而是帮助读者理解变量之间的依赖方向。正文在引用示意图时应解释图中关系与后续公式的对应位置，避免只在段末写“如图所示”。
+图~\ref{fig:tikz-structure}不是结果图，而是帮助读者理解变量之间的依赖方向。正文在引用示意图时应解释图中关系与后续公式的对应位置，避免只在段末写“如图所示”。
 
 \section{模拟结果}
 
 \subsection{参数响应曲线}
 
-为说明数据绘图的正文写法，图~\ref{fig:lilaq-response}用一组小型模拟数据比较观测值和模型响应。曲线、坐标轴和图例均由可编辑的矢量绘图命令生成，图题、编号、上下间距和页眉页脚由论文模板统一处理。
+为说明数据绘图的正文写法，图~\ref{fig:response-comparison}用一组小型模拟数据比较观测值和模型响应。曲线、坐标轴和图例均由 PGFPlots 生成，图题、编号、上下间距和页眉页脚由论文模板统一处理。
 \begin{figure}[htbp]
   \centering
-  \begin{tikzpicture}[x=1.0cm,y=3.0cm]
-    \draw[->] (0,0)--(6.7,0) node[right] {$t$};
-    \draw[->] (0,0)--(0,0.95) node[above] {$P(t)$};
-    \foreach \x in {0,1,2,3,4,5,6}
-      \draw (\x,0)--(\x,-0.025) node[below=2pt] {\small \x};
-    \foreach \y in {0.2,0.4,0.6,0.8}
-      \draw (0,\y)--(-0.06,\y) node[left] {\small \y};
-    \draw[gray!60] (0,0.48)--(6,0.48);
-    \draw[blue,thick] plot coordinates {(0,0.50)(1,0.79)(2,0.57)(3,0.36)(4,0.42)(5,0.56)(6,0.56)};
-    \draw[red,dashed,thick] plot coordinates {(0,0.48)(1,0.62)(2,0.74)(3,0.69)(4,0.58)(5,0.46)(6,0.38)};
-    \foreach \x/\y in {0/0.48,1/0.62,2/0.74,3/0.69,4/0.58,5/0.46,6/0.38}
-      \fill[red] (\x,\y) circle (1.5pt);
-    \draw[blue,thick] (4.4,0.86)--(4.8,0.86); \node[right] at (4.8,0.86) {\small 模型响应};
-    \draw[red,dashed,thick] (4.4,0.77)--(4.8,0.77); \node[right] at (4.8,0.77) {\small 观测值};
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=.78\textwidth,height=5.3cm,
+      xmin=0,xmax=6.2,ymin=.25,ymax=.9,
+      xtick={0,1,2,3,4,5,6},ytick={.3,.4,.5,.6,.7,.8},
+      xlabel={$t$},ylabel={$P(t)$},grid=major,
+      grid style={black!12,line width=.35pt},
+      tick label style={font=\scriptsize},label style={font=\small},
+      legend style={draw=none,font=\scriptsize,at={(.5,-.22)},anchor=north,legend columns=2}]
+      \addplot+[only marks,black,mark=*,mark size=1.4pt]
+        coordinates {(0,.48)(1,.62)(2,.74)(3,.69)(4,.58)(5,.46)(6,.38)};
+      \addlegendentry{观测值}
+      \addplot+[no markers,black,line width=.8pt,smooth]
+        coordinates {(0,.50)(1,.7919)(2,.5735)(3,.3583)(4,.4240)(5,.5587)(6,.5565)};
+      \addlegendentry{模型响应}
+    \end{axis}
   \end{tikzpicture}
   \caption{观测值与模型响应的比较（模拟数据）}
-  \label{fig:lilaq-response}
+  \label{fig:response-comparison}
 \end{figure}
 
-从图~\ref{fig:lilaq-response}可见，示例模型在中间时段的响应与观测值存在明显差异，后续分析应结合参数区间、残差图和边界条件判断误差来源。由于数据是模拟的，这张图只展示结果段的表达方式，不支持对真实装置性能的结论。
+从图~\ref{fig:response-comparison}可见，示例模型在中间时段的响应与观测值存在明显差异，后续分析应结合参数区间、残差图和边界条件判断误差来源。由于数据是模拟的，这张图只展示结果段的表达方式，不支持对真实装置性能的结论。
 
-同一组数据可以使用 TikZ、PGFPlots 或其他绘图工具生成矢量图。实际论文中应在生成脚本中固定正文字体、数学字体、字号和线宽，并在图注中说明数据来源和处理方法。
+同一数据还可以用于演示 PGFPlots 图形的复用方式。图~\ref{fig:pgfplots-response}用相同的观测值与模型响应生成独立矢量曲线；LaTeX 示例把绘图命令直接写入正文，使图内文字继承论文的正文字体和数学字体。
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}
+    \begin{axis}[
+      width=.78\textwidth,height=5.3cm,
+      xmin=0,xmax=6.2,ymin=.25,ymax=.9,
+      xtick={0,1,2,3,4,5,6},ytick={.3,.4,.5,.6,.7,.8},
+      xlabel={$t$},ylabel={$P(t)$},grid=major,
+      grid style={black!12,line width=.35pt},
+      tick label style={font=\scriptsize},label style={font=\small},
+      legend style={draw=none,font=\scriptsize,at={(.5,-.22)},anchor=north,legend columns=2}]
+      \addplot+[only marks,black,mark=*,mark size=1.4pt]
+        coordinates {(0,.48)(1,.62)(2,.74)(3,.69)(4,.58)(5,.46)(6,.38)};
+      \addlegendentry{观测值}
+      \addplot+[no markers,black,line width=.8pt,smooth]
+        coordinates {(0,.50)(1,.7919)(2,.5735)(3,.3583)(4,.4240)(5,.5587)(6,.5565)};
+      \addlegendentry{模型响应}
+    \end{axis}
+  \end{tikzpicture}
+  \caption{统一字体的 PGFPlots 响应曲线}
+  \label{fig:pgfplots-response}
+\end{figure}
 
-同一组数据还可以从空间分布、方向场和区间估计三个角度观察。图~\ref{fig:lilaq-diagnostics}把状态等高线、色彩图、局部方向场和预测区间带组合在一起：前两者强调状态空间的分布，矢量场强调局部变化方向，区间带明确表达不确定性范围。真实研究中，这组图可以替换为实验网格或仿真输出。
+无论使用哪一种绘图工具，都应在生成命令中固定字体、字号和线宽，并在图注中说明数据来源与处理方法。
+
+同一组数据还可以从空间分布、方向场和区间估计三个角度观察。图~\ref{fig:pgfplots-diagnostics}把状态等高线、色彩图、局部方向场和预测区间带组合在一起：前两者强调状态空间的分布，矢量场强调局部变化方向，区间带明确表达不确定性范围。真实研究中，这组图可以替换为实验网格或仿真输出。
 \begin{figure}[htbp]
   \centering
   \subfigure[状态等高线]{
-    \begin{tikzpicture}[scale=0.48]
-      \draw[->] (0,0)--(4,0); \draw[->] (0,0)--(0,3);
-      \draw[blue,thick] (0.5,0.4) .. controls (1.3,1.1) and (2.8,0.8) .. (3.5,2.5);
-      \draw[blue] (0.4,0.8) .. controls (1.5,1.7) and (2.8,1.2) .. (3.7,2.9);
-      \draw[blue] (0.1,0.2) .. controls (1.2,0.8) and (2.4,0.5) .. (3.2,2.0);
+    \begin{tikzpicture}
+      \begin{axis}[width=.46\textwidth,height=3.25cm,xmin=0,xmax=3,ymin=0,ymax=3,
+        xlabel={$x$},ylabel={$y$},ticks=none,axis lines=left]
+        \addplot[blue!45,thin] coordinates {(.833,0)(.167,1)(0,1.25)};
+        \addplot[blue!55,thin] coordinates {(2.25,0)(2,.167)(1.375,1)(1,1.5)(.625,2)(.1,3)};
+        \addplot[blue!65,thick] coordinates {(3,.833)(2.75,1)(2,1.5)(1.625,2)(1,2.833)(.9,3)};
+        \addplot[blue!75,thin] coordinates {(3,1.7)(2.625,2)(2,2.625)(1.7,3)};
+        \addplot[blue!85,thin] coordinates {(3,2.625)(2.625,3)};
+      \end{axis}
     \end{tikzpicture}}
   \hfill
   \subfigure[状态色彩图]{
-    \begin{tikzpicture}[scale=0.48]
-      \foreach \x in {0,...,3}\foreach \y in {0,...,2}{
-        \pgfmathtruncatemacro{\shade}{12+12*\x+10*\y}
-        \fill[blue!\shade!yellow] (\x,\y) rectangle +(0.9,0.8);
-      }
-      \draw (0,0) rectangle (3.9,2.8);
+    \begin{tikzpicture}
+      \begin{axis}[width=.46\textwidth,height=3.25cm,xmin=0,xmax=3,ymin=0,ymax=3,
+        xlabel={$x$},ylabel={$y$},view={0}{90},colorbar,
+        colorbar style={width=1.5mm,tick label style={font=\tiny}},
+        colormap/viridis,point meta min=.2,point meta max=2.2,y dir=normal]
+        \addplot[matrix plot*,mesh/cols=4,point meta=explicit] table[meta=z,row sep=crcr] {
+          x y z\\
+          0 0 .2\\
+          1 0 .5\\
+          2 0 .8\\
+          3 0 1.0\\
+          0 1 .4\\
+          1 1 .7\\
+          2 1 1.1\\
+          3 1 1.3\\
+          0 2 .6\\
+          1 2 1.0\\
+          2 2 1.4\\
+          3 2 1.8\\
+          0 3 .8\\
+          1 3 1.3\\
+          2 3 1.8\\
+          3 3 2.2\\
+        };
+      \end{axis}
     \end{tikzpicture}}
   \\
   \subfigure[局部方向场]{
-    \begin{tikzpicture}[scale=0.48,>=Stealth]
-      \draw[->] (0,0)--(4,0); \draw[->] (0,0)--(0,3);
-      \foreach \x in {0.5,1.5,2.5,3.5}\foreach \y in {0.4,1.2,2.0}
-        \draw[->,teal] (\x,\y)--+({0.3-0.06*\y},{0.08*\x});
+    \begin{tikzpicture}
+      \begin{axis}[width=.46\textwidth,height=3.25cm,xmin=-.2,xmax=3.3,ymin=-.2,ymax=3.3,
+        xlabel={$x$},ylabel={$y$},xtick={0,1,2,3},ytick={0,1,2,3},axis lines=left]
+        \addplot[teal,quiver={u=\thisrow{u},v=\thisrow{v},scale arrows=.42},-stealth] table[row sep=crcr] {
+          x y u v\\
+          0 0 1 .00\\
+          1 0 1 .25\\
+          2 0 1 .50\\
+          3 0 1 .75\\
+          0 1 .75 .00\\
+          1 1 .75 .25\\
+          2 1 .75 .50\\
+          3 1 .75 .75\\
+          0 2 .50 .00\\
+          1 2 .50 .25\\
+          2 2 .50 .50\\
+          3 2 .50 .75\\
+          0 3 .25 .00\\
+          1 3 .25 .25\\
+          2 3 .25 .50\\
+          3 3 .25 .75\\
+        };
+      \end{axis}
     \end{tikzpicture}}
   \hfill
   \subfigure[预测区间带]{
-    \begin{tikzpicture}[scale=0.48]
-      \draw[->] (0,0)--(4,0); \draw[->] (0,0)--(0,3);
-      \fill[blue!15] (0.4,1.0)--(1.2,1.5)--(2.0,1.3)--(2.8,2.0)--(3.6,2.3)
-        --(3.6,2.7)--(2.8,2.4)--(2.0,1.7)--(1.2,1.9)--(0.4,1.4)--cycle;
-      \draw[blue,thick] (0.4,1.2)--(1.2,1.7)--(2.0,1.5)--(2.8,2.2)--(3.6,2.5);
+    \begin{tikzpicture}
+      \begin{axis}[width=.46\textwidth,height=3.25cm,xmin=0,xmax=6,ymin=.2,ymax=.9,
+        xlabel={$t$},ylabel={$P(t)$},tick label style={font=\scriptsize},axis lines=left]
+        \addplot[name path=diagmean,draw=none] coordinates {(0,.50)(1,.7919)(2,.5735)(3,.3583)(4,.4240)(5,.5587)(6,.5565)};
+        \addplot[name path=diaglower,draw=none] coordinates {(0,.38)(1,.6719)(2,.4535)(3,.2383)(4,.3040)(5,.4387)(6,.4365)};
+        \addplot[blue!18] fill between[of=diagmean and diaglower];
+        \addplot[blue,thick] coordinates {(0,.50)(1,.7919)(2,.5735)(3,.3583)(4,.4240)(5,.5587)(6,.5565)};
+      \end{axis}
     \end{tikzpicture}}
   \caption{状态空间与不确定性传播的诊断图组}
-  \label{fig:lilaq-diagnostics}
+  \label{fig:pgfplots-diagnostics}
 \end{figure}
 
-\subsection{同一数据的多视图表达}
+\subsection{PGFPlots 多子图排版示例}
 
-当同一组实验需要同时展示响应曲线、散点关系、离散指标和预测区间时，可以将同一数据对象组织在一个总图中。图~\ref{fig:lilaq-multi-panel}使用同一类模拟数据展示四种数据视图；几何结构和模块关系则在各自章节中单独组织，不把不同性质的图形混在一组里。
+当同一组实验需要同时展示响应曲线、散点关系、离散指标和预测区间时，可以将同一数据对象组织在一个总图中。图~\ref{fig:pgfplots-multi-panel}使用同一组模拟数据展示四种数据视图；几何结构和模块关系则在各自章节中单独组织，不把不同性质的图形混在一组里。
 \begin{figure}[htbp]
   \centering
   \subfigure[观测与模型]{
-    \begin{tikzpicture}[scale=0.42]
-      \draw[->] (0,0)--(4.8,0); \draw[->] (0,0)--(0,2.8);
-      \draw[blue,thick] plot coordinates {(0.3,1.0)(1,1.8)(1.7,1.2)(2.4,0.8)(3.1,1.1)(3.8,1.7)(4.5,1.6)};
-      \draw[red,dashed] plot coordinates {(0.3,0.9)(1,1.3)(1.7,2.0)(2.4,1.8)(3.1,1.5)(3.8,1.1)(4.5,0.7)};
+    \begin{tikzpicture}
+      \begin{axis}[width=.46\textwidth,height=3.1cm,xmin=0,xmax=6,ymin=.25,ymax=.9,
+        xtick={0,2,4,6},tick label style={font=\tiny},axis lines=left]
+        \addplot[only marks,black,mark=*] coordinates {(0,.48)(1,.62)(2,.74)(3,.69)(4,.58)(5,.46)(6,.38)};
+        \addplot[black,thick,smooth] coordinates {(0,.50)(1,.7919)(2,.5735)(3,.3583)(4,.4240)(5,.5587)(6,.5565)};
+      \end{axis}
     \end{tikzpicture}}
   \hfill
   \subfigure[彩色散点关系]{
-    \begin{tikzpicture}[scale=0.42]
-      \draw[->] (0,0)--(4.8,0); \draw[->] (0,0)--(0,2.8);
-      \foreach \x/\y/\c in {0.5/0.7/blue,1.1/1.4/cyan,1.7/1.1/green,2.3/1.9/yellow,2.9/2.2/orange,3.5/1.5/red,4.1/2.5/purple}
-        \fill[\c] (\x,\y) circle (2pt);
+    \begin{tikzpicture}
+      \begin{axis}[width=.46\textwidth,height=3.1cm,xmin=0,xmax=6,ymin=.25,ymax=.9,
+        xtick={0,2,4,6},tick label style={font=\tiny},axis lines=left,
+        colormap/viridis]
+        \addplot[only marks,scatter,point meta=explicit,mark=*,mark size=1.6pt]
+          table[meta=c,row sep=crcr] {
+            x y c\\
+            0 .50 1\\
+            1 .7919 2\\
+            2 .5735 3\\
+            3 .3583 4\\
+            4 .4240 5\\
+            5 .5587 6\\
+            6 .5565 7\\
+          };
+      \end{axis}
     \end{tikzpicture}}
   \\
-  \subfigure[離散指标]{
-    \begin{tikzpicture}[scale=0.42]
-      \draw[->] (0,0)--(4.8,0); \draw[->] (0,0)--(0,2.8);
-      \foreach \x/\y in {0.5/1.0,1.5/1.7,2.5/1.3,3.5/2.2}
-        \fill[teal!60] (\x,0) rectangle +(0.6,\y);
+  \subfigure[离散指标]{
+    \begin{tikzpicture}
+      \begin{axis}[width=.46\textwidth,height=3.1cm,ymin=0,ymax=3,
+        ybar,bar width=6pt,symbolic x coords={1,2,3,4},xtick=data,
+        tick label style={font=\tiny},axis lines=left]
+        \addplot[fill=teal!55,draw=teal!70!black] coordinates {(1,1.3)(2,2.1)(3,1.7)(4,2.6)};
+      \end{axis}
     \end{tikzpicture}}
   \hfill
   \subfigure[预测区间带]{
-    \begin{tikzpicture}[scale=0.42]
-      \draw[->] (0,0)--(4.8,0); \draw[->] (0,0)--(0,2.8);
-      \fill[blue!15] (0.3,0.8)--(1,1.4)--(1.7,1.2)--(2.4,1.7)--(3.1,2.0)--(3.8,1.6)
-        --(3.8,2.2)--(3.1,2.6)--(2.4,2.3)--(1.7,1.8)--(1,2.0)--(0.3,1.4)--cycle;
-      \draw[blue,thick] (0.3,1.1)--(1,1.7)--(1.7,1.5)--(2.4,2.0)--(3.1,2.3)--(3.8,1.9);
+    \begin{tikzpicture}
+      \begin{axis}[width=.46\textwidth,height=3.1cm,xmin=0,xmax=6,ymin=.2,ymax=.9,
+        xtick={0,2,4,6},tick label style={font=\tiny},axis lines=left]
+        \addplot[name path=panelmean,draw=none] coordinates {(0,.50)(1,.7919)(2,.5735)(3,.3583)(4,.4240)(5,.5587)(6,.5565)};
+        \addplot[name path=panellower,draw=none] coordinates {(0,.38)(1,.6719)(2,.4535)(3,.2383)(4,.3040)(5,.4387)(6,.4365)};
+        \addplot[blue!18] fill between[of=panelmean and panellower];
+        \addplot[blue,thick] coordinates {(0,.50)(1,.7919)(2,.5735)(3,.3583)(4,.4240)(5,.5587)(6,.5565)};
+      \end{axis}
     \end{tikzpicture}}
   \caption{同一模型的多视图数据表达}
-  \label{fig:lilaq-multi-panel}
+  \label{fig:pgfplots-multi-panel}
 \end{figure}
 
 \section{数值离散与误差分析}
@@ -375,4 +464,4 @@
 
 \section{本章小结}
 
-本章展示了结构示意图、数据曲线、跨页参数表、差分格式和参数估计公式的组织方式。不同图表均作为论述证据的一部分出现；替换为真实研究内容时，应相应更新数据、图注和误差分析。
+本章用 TikZ 绘制结构图，用 PGFPlots 绘制数据曲线、等高线、色彩图、方向场和区间带，同时展示跨页参数表、差分格式和参数估计公式。不同图表均作为论述证据的一部分出现；替换为真实研究内容时，应相应更新数据、图注和误差分析。

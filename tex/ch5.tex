@@ -41,18 +41,15 @@
 伪代码强调步骤顺序，流程图则适合说明分支和反馈关系。图~\ref{fig:process}给出数据读取、参数估计、异常重试和结果输出之间的关系。
 \begin{figure}[htbp]
   \centering
-  \begin{tikzpicture}[scale=0.88,transform shape,>=Stealth,node distance=15mm,
-    block/.style={draw,rounded corners,align=center,minimum width=27mm,minimum height=10mm},
-    decision/.style={draw,diamond,aspect=2,align=center,inner sep=2pt}]
+  \begin{tikzpicture}[>=Stealth,node distance=15mm,
+    block/.style={draw,rounded corners,align=center,minimum width=27mm,minimum height=10mm}]
     \node[block,fill=blue!7] (read) {读取数据};
     \node[block,fill=teal!7,right=of read] (estimate) {估计参数};
-    \node[decision,right=of estimate] (check) {误差满足\\阈值？};
-    \node[block,fill=yellow!12,right=of check] (output) {输出结果};
-    \node[block,fill=orange!10,below=13mm of check] (retry) {调整步长};
+    \node[block,fill=yellow!12,right=of estimate] (output) {输出结果};
+    \node[block,fill=orange!10,below=13mm of estimate] (retry) {调整步长};
     \draw[->] (read)--(estimate);
-    \draw[->] (estimate)--(check);
-    \draw[->] (check)--node[above] {是}(output);
-    \draw[->] (check)--node[right] {否}(retry);
+    \draw[->] (estimate)--(output);
+    \draw[->] (estimate)--(retry);
     \draw[->] (retry.west)-| (read.south);
   \end{tikzpicture}
   \caption{带异常重试的参数估计流程}
