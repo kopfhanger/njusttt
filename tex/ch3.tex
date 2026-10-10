@@ -115,12 +115,12 @@
         \node[tree-node] (ratio) at (2.25,-0.294) {Impression/\\visitatori};
         \node[tree-node] (sales) at (3.75,-0.294) {Modalità\\di vendita};
         \node[tree-node] (placement) at (5.45,-0.294) {Tipo di\\posi\-zionamento};
-        \draw[->] (root.south west) -- (impr.north);
-        \draw[->] (root.south east) -- (gain.north);
-        \draw[->] (impr.south west) -- (traffic.north);
-        \draw[->] (impr.south east) -- (ratio.north);
-        \draw[->] (gain.south west) -- (sales.north);
-        \draw[->] (gain.south east) -- (placement.north);
+        \draw[->] (root) |- ($(root)!0.5!(impr)$) -| (impr);
+        \draw[->] (root) |- ($(root)!0.5!(gain)$) -| (gain);
+        \draw[->] (impr) |- ($(impr)!0.5!(traffic)$) -| (traffic);
+        \draw[->] (impr) |- ($(impr)!0.5!(ratio)$) -| (ratio);
+        \draw[->] (gain) |- ($(gain)!0.5!(sales)$) -| (sales);
+        \draw[->] (gain) |- ($(gain)!0.5!(placement)$) -| (placement);
       \end{tikzpicture}%
     }
     \caption{层级状态树}
