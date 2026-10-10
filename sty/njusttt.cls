@@ -231,8 +231,8 @@
 
         %% supervisor
         \begin{tabular}{rl}
-            \rmit\zihao{-2} \NJUST@label@englishadvisor    & \rmbfit\zihao{-2} \NJUST@value@englishadvisor   \\
-            \rmit\zihao{-2} \NJUST@label@englishcoadvisor  & \rmit\zihao{-2} \NJUST@value@englishcoadvisortitle~\rmbfit\zihao{-2} \NJUST@value@englishcoadvisor
+            \rmit\zihao{-2} \NJUST@label@englishadvisor & \rmit\zihao{-2} \NJUST@value@englishadvisortitle~\rmbfit\zihao{-2} \NJUST@value@englishadvisor \\
+            \rmit\zihao{-2} \NJUST@label@englishcoadvisor & \rmit\zihao{-2} \NJUST@value@englishcoadvisortitle~\rmbfit\zihao{-2} \NJUST@value@englishcoadvisor
         \end{tabular}
         \vskip \stretch{2}
 
