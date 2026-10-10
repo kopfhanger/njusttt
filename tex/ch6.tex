@@ -15,7 +15,7 @@
   \centering
   \caption{结论章节的证据组织方式}
   \label{tab:evidence-layers}
-  \begin{tabularx}{0.92\textwidth}{>{\centering\arraybackslash}p{0.16\textwidth}X X}
+  \begin{tabularx}{0.92\textwidth}{>{\centering\arraybackslash}p{0.16\textwidth}>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
     \toprule
     \textbf{分析层次} & \textbf{需要回答的问题} & \textbf{推荐证据}\\
     \midrule
@@ -50,7 +50,7 @@
   \centering
   \caption{研究问题、结论与证据类型的对应关系}
   \label{tab:question-evidence}
-  \begin{tabularx}{\textwidth}{X X >{\centering\arraybackslash}p{0.22\textwidth}}
+  \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}p{0.22\textwidth}}
     \toprule
     \textbf{研究问题} & \textbf{示例结论} & \textbf{证据类型}\\
     \midrule
@@ -77,8 +77,8 @@
 
 \subsection{模板使用建议}
 
-接入真实学位论文时，建议先复制本章的章节结构，再逐步替换正文、公式、图表和参考文献。TikZ 用于结构示意图，PGFPlots 用于数据图，定理和算法环境只在需要的位置使用。不要把示例章节中的数据、作者信息或参考文献直接带入真实论文。
+接入真实学位论文时，建议先复制本章的章节结构，再逐步替换正文、公式、图表和参考文献。结构示意图、数据图、定理和算法应按研究内容选用合适的表达方式。不要把示例章节中的数据、作者信息或参考文献直接带入真实论文。
 
 \section{本章小结}
 
-本章总结了示例论文的模型、证据和限制，并说明了模板扩展的职责边界。六章正文共享同一套页面、段落、公式和图表规则；TikZ、PGFPlots、定理和算法等内容对象只负责生成图表或内容，不接管模板的整体排版。
+本章总结了示例论文的模型、证据和限制，并说明了模板扩展的职责边界。六章正文共享同一套页面、段落、公式和图表规则，图表、定理和算法均服从模板的整体排版。

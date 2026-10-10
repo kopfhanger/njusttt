@@ -65,7 +65,7 @@
 \end{equation}
 式~\eqref{eq:physica-notation}只展示记号形式；实际研究中应根据张量的坐标变换规则和物理量的量纲给出完整推导。
 
-当示意图需要同时包含结构关系和数学标注时，可以使用 TikZ 直接绘制矢量图。图~\ref{fig:state-space-diagram}中，观测量进入状态更新，再由贝叶斯更新得到参数后验；预测结果返回下一轮观测。图内公式与本章状态更新记号一致。矢量图便于放大、打印和后续编辑。
+当示意图需要同时表达结构关系和数学标注时，图~\ref{fig:state-space-diagram}展示观测量、状态更新和参数后验之间的联系。预测结果返回下一轮观测，图内公式与本章状态更新记号一致，便于与正文公式对照。
 \begin{figure}[htbp]
   \centering
   \begin{tikzpicture}[
@@ -80,7 +80,7 @@
     \draw[arrow] (state)--node[above,font=\scriptsize] {贝叶斯更新}(post);
     \draw[arrow] (post.south)--++(0,-10mm)-|node[pos=.48,below,font=\scriptsize] {预测}(obs.south);
   \end{tikzpicture}
-  \caption{统一字体的 TikZ 状态空间示意图}
+  \caption{统一字体的状态空间示意图}
   \label{fig:state-space-diagram}
 \end{figure}
 

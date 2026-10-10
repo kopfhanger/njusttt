@@ -342,7 +342,11 @@
 {\ctexset{chapter={format += {\centering\zihao{3}}}} \chapter*{\NJUST@listfigurename}}
 \@mkboth{\MakeUppercase\NJUST@listfigurename}
 {\MakeUppercase\NJUST@listfigurename}
-\@starttoc{lof}     % list of figures
+{%
+    \let\oldnumberline\numberline
+    \renewcommand{\numberline}{\figurename~\oldnumberline}
+    \@starttoc{lof}     % list of figures
+}
 }
 
 
@@ -353,7 +357,11 @@
 {\ctexset{chapter={format += {\centering\zihao{3}}}} \chapter*{\NJUST@listtablename}}
 \@mkboth{\MakeUppercase\NJUST@listtablename}
 {\MakeUppercase\NJUST@listtablename}
-\@starttoc{lot}     % list of tables
+{%
+    \let\oldnumberline\numberline
+    \renewcommand{\numberline}{\tablename~\oldnumberline}
+    \@starttoc{lot}     % list of tables
+}
 }
 
 

@@ -14,7 +14,7 @@
 
 \subsection{结构关系图}
 
-图~\ref{fig:tikz-structure}说明数据、模型和预测结果之间的依赖关系。箭头使用黑色线条表示方向，节点颜色只承担分组功能；这种做法适合在论文黑白打印时保持方向关系清楚。
+图~\ref{fig:structure-relations}说明数据、模型和预测结果之间的依赖关系。箭头表示方向，节点颜色承担分组功能；这种表达适合在黑白打印时保持关系清楚。
 \begin{figure}[htbp]
   \centering
   \begin{tikzpicture}[>=Stealth,node distance=14mm,
@@ -26,10 +26,10 @@
     \draw[-{Stealth},thick] (model)--(pred);
   \end{tikzpicture}
   \caption{综合模型的结构关系图}
-  \label{fig:tikz-structure}
+  \label{fig:structure-relations}
 \end{figure}
 
-图~\ref{fig:tikz-structure}不是结果图，而是帮助读者理解变量之间的依赖方向。正文在引用示意图时应解释图中关系与后续公式的对应位置，避免只在段末写“如图所示”。
+图~\ref{fig:structure-relations}不是结果图，而是帮助读者理解变量之间的依赖方向。正文在引用示意图时应解释图中关系与后续公式的对应位置，避免只在段末写“如图所示”。
 
 \section{模拟结果}
 
@@ -306,7 +306,7 @@
   \caption{常用离散格式的精度、稳定性与代价对照}
   \label{tab:schemes}
   \small
-  \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{0.16\textwidth}>{\centering\arraybackslash}p{0.13\textwidth}X X X}
+  \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{0.16\textwidth}>{\centering\arraybackslash}p{0.13\textwidth}>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
     \toprule
     \textbf{格式} & \textbf{时间精度} & \textbf{稳定性} & \textbf{每步代价} & \textbf{适用场景}\\
     \midrule
@@ -322,7 +322,7 @@
 
 参数扫描会得到行数较多的结果表。跨页表格应在续页重复表头，读者不必回到上一页寻找列名。表~\ref{tab:sweep}的行数用于展示长表编排，数值为排版示例，不是计算记录。
 \begin{small}
-\begin{longtable}{@{}r r r r r r@{}}
+\begin{longtable}{@{}c c c c c c@{}}
   \caption{参数扫描结果（跨页长表示例）}\label{tab:sweep}\\
   \toprule
   \textbf{序号} & \textbf{步长 $h$/mm} & \textbf{网格数} & \textbf{实测收敛阶} & \textbf{RMSE} & \textbf{耗时/s}\\
@@ -334,7 +334,7 @@
   \midrule
   \endhead
   \midrule
-  \multicolumn{6}{r}{接下页}\\
+  \multicolumn{6}{c}{接下页}\\
   \endfoot
   \bottomrule
   \endlastfoot
@@ -464,4 +464,4 @@
 
 \section{本章小结}
 
-本章用 TikZ 绘制结构图，用 PGFPlots 绘制数据曲线、等高线、色彩图、方向场和区间带，同时展示跨页参数表、差分格式和参数估计公式。不同图表均作为论述证据的一部分出现；替换为真实研究内容时，应相应更新数据、图注和误差分析。
+本章用结构图和数据图展示模型关系、计算结果和不确定性，同时给出跨页参数表、差分格式和参数估计公式。不同图表均作为论述证据的一部分出现；替换为真实研究内容时，应相应更新数据、图注和误差分析。
