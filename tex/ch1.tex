@@ -81,23 +81,20 @@
   \caption{时间旅行概率动力学研究论文情况}
   \label{tab:papers}
   \centering
-  \resizebox{0.8\textwidth}{!}{%
-    \begin{tabular}{cccc}
-      \hline
-      \textbf{论文编号} & \textbf{作者} & \textbf{题目} & \textbf{期刊}\\
-      \hline
-      1 & John Smith & 时间旅行中的概率分布模型\bibmark{1} & 物理学报\\
-      \hline
-      \multirow{2}{*}{2} & \multirow{2}{*}{Jane Doe} & 时间旅行的时间线分支与多世界理论\bibmark{2} & \multirow{2}{*}{科学杂志}\\
-      \cline{3-3}
-                         &                              & 时间旅行中的时间循环理论\bibmark{3} & \\
-      \hline
-      3 & David Johnson & 与自由意志的哲学思考 & 科学研究期刊\\
-      \hline
-      4 & Emily Brown & 时间旅行伦理与责任的道德考量\bibmark{4} & 伦理学评论\\
-      \hline
-    \end{tabular}%
-  }
+  \begin{tabularx}{\textwidth}{M{0.12\textwidth} M{0.18\textwidth} C M{0.22\textwidth}}
+    \toprule
+    \textbf{论文编号} & \textbf{作者} & \textbf{题目} & \textbf{期刊}\\
+    \midrule
+    1 & John Smith & 时间旅行中的概率分布模型\bibmark{1} & 物理学报\\
+    \addlinespace[2pt]
+    \multirow{2}{*}{2} & \multirow{2}{*}{Jane Doe} & 时间旅行的时间线分支与多世界理论\bibmark{2} & \multirow{2}{*}{科学杂志}\\
+     &  & 时间旅行中的时间循环理论\bibmark{3} & \\
+    \addlinespace[2pt]
+    3 & David Johnson & 与自由意志的哲学思考 & 科学研究期刊\\
+    \addlinespace[2pt]
+    4 & Emily Brown & 时间旅行伦理与责任的道德考量\bibmark{4} & 伦理学评论\\
+    \bottomrule
+  \end{tabularx}
 \end{table}
 
 \subsection{概率动力学与不确定性量化研究现状}
@@ -180,7 +177,7 @@
   \centering
   \caption{全文主要符号与量纲约定}
   \label{tab:notation}
-  \begin{tabularx}{0.82\textwidth}{>{\centering\arraybackslash}p{0.22\textwidth}>{\centering\arraybackslash}X>{\centering\arraybackslash}p{0.25\textwidth}}
+  \begin{tabularx}{0.82\textwidth}{M{0.22\textwidth} C M{0.25\textwidth}}
     \toprule
     \textbf{符号} & \textbf{含义} & \textbf{量纲或单位}\\
     \midrule
@@ -202,7 +199,7 @@
   \centering
   \caption{三类建模思路的适用条件与限制}
   \label{tab:methods}
-  \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{0.17\textwidth}>{\centering\arraybackslash}X>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+  \begin{tabularx}{\textwidth}{M{0.17\textwidth} C C C}
     \toprule
     \textbf{方法类别} & \textbf{建模思路} & \textbf{适用条件} & \textbf{主要限制}\\
     \midrule

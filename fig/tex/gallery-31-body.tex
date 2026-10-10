@@ -1,38 +1,48 @@
-% Adapted TikZ graph examples for probabilistic dependencies and branching states.
-\begin{tikzpicture}[>=Stealth,
-  g31-variable/.style={draw,ellipse,fill=orange!12,minimum width=13mm,
-    minimum height=8mm,inner sep=1pt,font=\small},
-  state/.style={draw,circle,fill=blue!8,minimum size=10mm,inner sep=1pt,font=\small},
-  obs/.style={draw,rounded corners=2pt,fill=teal!10,minimum width=13mm,
-    minimum height=8mm,inner sep=1pt,font=\small},
-  panel title/.style={font=\small\bfseries}
-]
-  \node[panel title] at (3.1,1.75) {贝叶斯依赖网络};
-  \node[g31-variable] (g31-theta) at (.55,.35) {$\theta$};
-  \node[state] (g31-x0) at (2.1,.35) {$x_{k-1}$};
-  \node[state] (g31-x1) at (3.85,.35) {$x_k$};
-  \node[state] (g31-x2) at (5.55,.35) {$x_{k+1}$};
-  \node[obs] (g31-y) at (3.85,-1.05) {$y_k$};
-  \node[g31-variable] (g31-v) at (5.55,-1.05) {$v_k$};
-  \draw[->,thick] (g31-theta)--(g31-x1);
-  \draw[->,thick] (g31-x0)--(g31-x1);
-  \draw[->,thick] (g31-x1)--(g31-x2);
-  \draw[->,thick] (g31-x1)--(g31-y);
-  \draw[->,thick] (g31-v)--(g31-y);
-  \node[font=\tiny,align=center] at (3.1,-1.85) {参数、状态、观测与噪声的依赖关系};
-
-  \node[panel title] at (10.05,1.75) {时间分支路径};
-  \node[state] (g31-s0) at (7.45,.25) {$s_0$};
-  \node[state] (g31-s1a) at (9.55,1.0) {$s_{1a}$};
-  \node[state] (g31-s1b) at (9.55,-.55) {$s_{1b}$};
-  \node[state] (g31-s2a) at (12.0,1.55) {$s_{2a}$};
-  \node[state] (g31-s2b) at (12.0,.35) {$s_{2b}$};
-  \node[state] (g31-s2c) at (12.0,-.7) {$s_{2c}$};
-  \draw[->,thick] (g31-s0)--node[above,sloped,font=\tiny] {$p$}(g31-s1a);
-  \draw[->,thick] (g31-s0)--node[below,sloped,font=\tiny] {$1-p$}(g31-s1b);
-  \draw[->,thick] (g31-s1a)--node[above,sloped,font=\tiny] {$q$}(g31-s2a);
-  \draw[->,thick] (g31-s1a)--node[below,sloped,font=\tiny] {$1-q$}(g31-s2b);
-  \draw[->,thick] (g31-s1b)--node[above,sloped,font=\tiny] {$r$}(g31-s2b);
-  \draw[->,thick] (g31-s1b)--node[below,sloped,font=\tiny] {$1-r$}(g31-s2c);
-  \node[font=\tiny,align=center] at (10.0,-1.65) {边表示分支转移概率};
-\end{tikzpicture}
+% TikZ graph examples presented as individually captioned subfigures.
+\begin{subfigure}[t]{0.48\textwidth}
+  \centering
+  \resizebox{0.94\linewidth}{!}{%
+    \begin{tikzpicture}[>=Stealth,
+      g31-variable/.style={draw,ellipse,fill=orange!12,minimum width=13mm,
+        minimum height=8mm,inner sep=1pt,font=\small},
+      state/.style={draw,circle,fill=blue!8,minimum size=10mm,inner sep=1pt,font=\small},
+      obs/.style={draw,rounded corners=2pt,fill=teal!10,minimum width=13mm,
+        minimum height=8mm,inner sep=1pt,font=\small}]
+      \node[g31-variable] (g31-theta) at (.55,.35) {$\theta$};
+      \node[state] (g31-x0) at (2.1,.35) {$x_{k-1}$};
+      \node[state] (g31-x1) at (3.85,.35) {$x_k$};
+      \node[state] (g31-x2) at (5.55,.35) {$x_{k+1}$};
+      \node[obs] (g31-y) at (3.85,-1.05) {$y_k$};
+      \node[g31-variable] (g31-v) at (5.55,-1.05) {$v_k$};
+      \draw[->,thick] (g31-theta)--(g31-x1);
+      \draw[->,thick] (g31-x0)--(g31-x1);
+      \draw[->,thick] (g31-x1)--(g31-x2);
+      \draw[->,thick] (g31-x1)--(g31-y);
+      \draw[->,thick] (g31-v)--(g31-y);
+      \node[font=\tiny,align=center] at (3.1,-1.85) {参数、状态、观测与噪声的依赖关系};
+    \end{tikzpicture}%
+  }
+  \caption{贝叶斯依赖网络}
+\end{subfigure}\hfill
+\begin{subfigure}[t]{0.48\textwidth}
+  \centering
+  \resizebox{0.94\linewidth}{!}{%
+    \begin{tikzpicture}[>=Stealth,
+      state/.style={draw,circle,fill=blue!8,minimum size=10mm,inner sep=1pt,font=\small}]
+      \node[state] (g31-s0) at (7.45,.25) {$s_0$};
+      \node[state] (g31-s1a) at (9.55,1.0) {$s_{1a}$};
+      \node[state] (g31-s1b) at (9.55,-.55) {$s_{1b}$};
+      \node[state] (g31-s2a) at (12.0,1.55) {$s_{2a}$};
+      \node[state] (g31-s2b) at (12.0,.35) {$s_{2b}$};
+      \node[state] (g31-s2c) at (12.0,-.7) {$s_{2c}$};
+      \draw[->,thick] (g31-s0)--node[above,sloped,font=\tiny] {$p$}(g31-s1a);
+      \draw[->,thick] (g31-s0)--node[below,sloped,font=\tiny] {$1-p$}(g31-s1b);
+      \draw[->,thick] (g31-s1a)--node[above,sloped,font=\tiny] {$q$}(g31-s2a);
+      \draw[->,thick] (g31-s1a)--node[below,sloped,font=\tiny] {$1-q$}(g31-s2b);
+      \draw[->,thick] (g31-s1b)--node[above,sloped,font=\tiny] {$r$}(g31-s2b);
+      \draw[->,thick] (g31-s1b)--node[below,sloped,font=\tiny] {$1-r$}(g31-s2c);
+      \node[font=\tiny,align=center] at (10.0,-1.65) {边表示分支转移概率};
+    \end{tikzpicture}%
+  }
+  \caption{时间分支路径}
+\end{subfigure}

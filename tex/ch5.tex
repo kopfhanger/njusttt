@@ -76,51 +76,82 @@
 图~\ref{fig:engineering-diagrams}把六类工程结构图放在同一组中：层级架构、输入输出流程、有向网络、节点分组、UML 接口和代数结构。总题注说明共同主题，子图题注分别说明各自表达的关系；与本章论证关系不大的图可保留为独立普通图。
 \begin{figure}[htbp]
   \centering
-  \subfigure[层级架构]{
-    \begin{tikzpicture}[>=Stealth,node distance=7mm,
-      n/.style={draw,rounded corners,align=center,minimum width=22mm}]
-      \node[n] (a) {系统}; \node[n,below left=of a] (b) {采集}; \node[n,below right=of a] (c) {分析};
-      \draw[->] (a)--(b); \draw[->] (a)--(c);
-    \end{tikzpicture}}
-  \hfill
-  \subfigure[输入输出流程]{
-    \begin{tikzpicture}[>=Stealth,node distance=5mm,
-      n/.style={draw,align=center,minimum width=17mm,minimum height=7mm}]
-      \node[n] (a) {输入}; \node[n,right=of a] (b) {处理}; \node[n,right=of b] (c) {输出};
-      \draw[->] (a)--(b); \draw[->] (b)--(c);
-    \end{tikzpicture}}
-  \\
-  \subfigure[有向网络]{
-    \begin{tikzpicture}[>=Stealth,node distance=10mm,
-      n/.style={draw,circle,inner sep=2pt}]
-      \node[n] (a) {$A$}; \node[n,right=of a] (b) {$B$}; \node[n,below=of a] (c) {$C$};
-      \node[n,below=of b] (d) {$D$};
-      \draw[->] (a)--(b); \draw[->] (a)--(c); \draw[->] (c)--(d); \draw[->] (b)--(d);
-    \end{tikzpicture}}
-  \hfill
-  \subfigure[节点分组]{
-    \begin{tikzpicture}[>=Stealth,node distance=7mm,
-      n/.style={draw,circle,inner sep=2pt}]
-      \node[n,fill=blue!12] (a) {$x_1$}; \node[n,fill=blue!12,right=of a] (b) {$x_2$};
-      \node[n,fill=orange!15,below=of a] (c) {$y_1$}; \node[n,fill=orange!15,right=of c] (d) {$y_2$};
-      \draw[->] (a)--(c); \draw[->] (b)--(d);
-    \end{tikzpicture}}
-  \\
-  \subfigure[UML 接口关系]{
-    \begin{tikzpicture}[>=Stealth,node distance=10mm,
-      n/.style={draw,align=center,minimum width=21mm,minimum height=8mm}]
-      \node[n] (a) {Observer\\+ read()};
-      \node[n,right=of a] (b) {Estimator\\+ update()};
-      \draw[->] (a)--node[above] {data}(b);
-    \end{tikzpicture}}
-  \hfill
-  \subfigure[代数结构层级]{
-    \begin{tikzpicture}[>=Stealth,node distance=7mm,
-      n/.style={draw,rounded corners,align=center,minimum width=20mm}]
-      \node[n] (a) {向量空间}; \node[n,below=of a] (b) {内积空间};
-      \node[n,below=of b] (c) {Hilbert 空间};
-      \draw[->] (a)--(b); \draw[->] (b)--(c);
-    \end{tikzpicture}}
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \resizebox{0.88\linewidth}{!}{%
+      \begin{tikzpicture}[>=Stealth,node distance=7mm,
+        n/.style={draw,rounded corners,align=center,minimum width=22mm}]
+        \node[n] (a) {系统}; \node[n,below left=of a] (b) {采集}; \node[n,below right=of a] (c) {分析};
+        \draw[->] (a)--(b); \draw[->] (a)--(c);
+      \end{tikzpicture}%
+    }
+    \caption{层级架构}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \resizebox{0.88\linewidth}{!}{%
+      \begin{tikzpicture}[>=Stealth,node distance=5mm,
+        n/.style={draw,align=center,minimum width=17mm,minimum height=7mm}]
+        \node[n] (a) {输入}; \node[n,right=of a] (b) {处理}; \node[n,right=of b] (c) {输出};
+        \draw[->] (a)--(b); \draw[->] (b)--(c);
+      \end{tikzpicture}%
+    }
+    \caption{输入输出流程}
+  \end{subfigure}
+
+  \par\medskip
+
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \resizebox{0.72\linewidth}{!}{%
+      \begin{tikzpicture}[>=Stealth,node distance=10mm,
+        n/.style={draw,circle,inner sep=2pt}]
+        \node[n] (a) {$A$}; \node[n,right=of a] (b) {$B$}; \node[n,below=of a] (c) {$C$};
+        \node[n,below=of b] (d) {$D$};
+        \draw[->] (a)--(b); \draw[->] (a)--(c); \draw[->] (c)--(d); \draw[->] (b)--(d);
+      \end{tikzpicture}%
+    }
+    \caption{有向网络}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \resizebox{0.72\linewidth}{!}{%
+      \begin{tikzpicture}[>=Stealth,node distance=7mm,
+        n/.style={draw,circle,inner sep=2pt}]
+        \node[n,fill=blue!12] (a) {$x_1$}; \node[n,fill=blue!12,right=of a] (b) {$x_2$};
+        \node[n,fill=orange!15,below=of a] (c) {$y_1$}; \node[n,fill=orange!15,right=of c] (d) {$y_2$};
+        \draw[->] (a)--(c); \draw[->] (b)--(d);
+      \end{tikzpicture}%
+    }
+    \caption{节点分组}
+  \end{subfigure}
+
+  \par\medskip
+
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \resizebox{0.88\linewidth}{!}{%
+      \begin{tikzpicture}[>=Stealth,node distance=10mm,
+        n/.style={draw,align=center,minimum width=21mm,minimum height=8mm}]
+        \node[n] (a) {Observer\\+ read()};
+        \node[n,right=of a] (b) {Estimator\\+ update()};
+        \draw[->] (a)--node[above] {data}(b);
+      \end{tikzpicture}%
+    }
+    \caption{UML 接口关系}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.48\textwidth}
+    \centering
+    \resizebox{0.50\linewidth}{!}{%
+      \begin{tikzpicture}[>=Stealth,node distance=7mm,
+        n/.style={draw,rounded corners,align=center,minimum width=20mm}]
+        \node[n] (a) {向量空间}; \node[n,below=of a] (b) {内积空间};
+        \node[n,below=of b] (c) {Hilbert 空间};
+        \draw[->] (a)--(b); \draw[->] (b)--(c);
+      \end{tikzpicture}%
+    }
+    \caption{代数结构层级}
+  \end{subfigure}
   \caption{工程模块图组：架构、流程、网络、分组、接口与代数层级}
   \label{fig:engineering-diagrams}
 \end{figure}
@@ -174,7 +205,7 @@
   \centering
   \caption{评估指标的定义与适用条件}
   \label{tab:metrics}
-  \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{0.16\textwidth}>{\centering\arraybackslash}X>{\centering\arraybackslash}X}
+  \begin{tabularx}{\textwidth}{M{0.16\textwidth} C C}
     \toprule
     \textbf{指标} & \textbf{定义} & \textbf{适用条件}\\
     \midrule

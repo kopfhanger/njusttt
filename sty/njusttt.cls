@@ -20,7 +20,7 @@
 %% package infomation
 \RequirePackage{fancyhdr}      % page header/footer package
 \RequirePackage{mathtools,amsthm,amsfonts,amssymb,bm}      % math packages
-\RequirePackage{graphicx,psfrag,flafter,subfigure}      % graphics packages
+\RequirePackage{graphicx,psfrag,flafter}      % graphics packages
 
 
 
