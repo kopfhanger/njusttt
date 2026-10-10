@@ -73,86 +73,173 @@
   \label{fig:module-interface}
 \end{figure}
 
-图~\ref{fig:engineering-diagrams}把六类工程结构图放在同一组中：层级架构、输入输出流程、有向网络、节点分组、UML 接口和代数结构。总题注说明共同主题，子图题注分别说明各自表达的关系；与本章论证关系不大的图可保留为独立普通图。
+图~\ref{fig:engineering-diagrams}把六类工程结构并列为一组：层级架构、输入输出流程、有向网络、节点分组、UML 接口和代数结构。总题注说明共同主题，子图题注分别说明各自表达的关系；与本章论证关系不大的图可保留为独立普通图。
 \begin{figure}[htbp]
   \centering
-  \begin{subfigure}[t]{0.48\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
     \centering
-    \resizebox{0.88\linewidth}{!}{%
-      \begin{tikzpicture}[>=Stealth,node distance=7mm,
-        n/.style={draw,rounded corners,align=center,minimum width=22mm}]
-        \node[n] (a) {系统}; \node[n,below left=of a] (b) {采集}; \node[n,below right=of a] (c) {分析};
-        \draw[->] (a)--(b); \draw[->] (a)--(c);
+    \resizebox{\linewidth}{!}{%
+      \begin{tikzpicture}[>=Stealth, every node/.style={font=\scriptsize},
+        layer/.style={draw,rounded corners=3pt,align=center,minimum height=7mm,inner sep=3pt},
+        norm/.style={layer,shape=diamond,aspect=2.8,fill=yellow!35,draw=orange!80!black,inner sep=1pt},
+        inputnode/.style={layer,shape=trapezium,trapezium angle=70,fill=red!20,draw=red!75!black}]
+        \useasboundingbox (-0.1,-0.1) rectangle (7.2,3.5);
+        \node[inputnode,minimum width=10mm] (input) at (1.45,0.25) {Input};
+        \node[layer,fill=orange!30,draw=orange!80!black,text width=19mm,inner sep=1pt] (attention) at (1.45,1.25) {Multi-Head\\Attention};
+        \node[norm,minimum width=18mm] (norm-a) at (1.45,2.35) {Add \& Norm};
+        \node[layer,fill=blue!25,draw=blue!75!black,text width=18mm,inner sep=1pt] (feed) at (4.85,1.25) {Feed\\Forward};
+        \node[norm,minimum width=18mm] (norm-b) at (4.85,2.35) {Add \& Norm};
+        \node[layer,fill=green!25,draw=green!65!black,minimum width=15mm] (softmax) at (6.55,2.35) {Softmax};
+        \draw[->,thick] (input.north) -- (attention.south);
+        \draw[->,thick] (attention.north) -- (norm-a.south);
+        \draw[->,thick,rounded corners=2pt] (norm-a.east) -- (3.25,2.35) -- (3.25,1.25) -- (feed.west);
+        \draw[->,thick] (feed.north) -- (norm-b.south);
+        \draw[->,thick] (norm-b.east) -- (softmax.west);
+        \draw[->,dashed,rounded corners=3pt] (input.west) -- (0.3,0.25) -- (0.3,2.35) -- (norm-a.west);
+        \draw[->,dashed,rounded corners=3pt] (norm-a.north) -- (1.45,3.12) -- (4.85,3.12) -- (norm-b.north);
       \end{tikzpicture}%
     }
     \caption{层级架构}
   \end{subfigure}\hfill
-  \begin{subfigure}[t]{0.48\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
     \centering
-    \resizebox{0.88\linewidth}{!}{%
-      \begin{tikzpicture}[>=Stealth,node distance=5mm,
-        n/.style={draw,align=center,minimum width=17mm,minimum height=7mm}]
-        \node[n] (a) {输入}; \node[n,right=of a] (b) {处理}; \node[n,right=of b] (c) {输出};
-        \draw[->] (a)--(b); \draw[->] (b)--(c);
+    \resizebox{\linewidth}{!}{%
+      \begin{tikzpicture}[>=Stealth, every node/.style={font=\scriptsize},
+        unit/.style={draw,rounded corners=4pt,align=center,minimum width=25mm,minimum height=8mm,fill=green!35,draw=green!55!black},
+        port/.style={draw,align=center,minimum width=14mm,minimum height=7mm}]
+        \useasboundingbox (-0.1,-0.1) rectangle (7.2,3.5);
+        \node[port,fill=magenta!18,draw=magenta!60!black] (input) at (0.72,1.55) {input};
+        \node[unit] (cu) at (3.45,2.85) {control unit (CU)};
+        \node[unit,text width=31mm] (alu) at (3.45,1.5) {arithmetic \& logic\\unit (ALU)};
+        \node[unit] (mu) at (3.45,0.15) {memory unit (MU)};
+        \node[port,shape=regular polygon,regular polygon sides=6,fill=cyan!25,draw=cyan!55!black] (output) at (6.25,1.5) {output};
+        \draw[->,thick,rounded corners=4pt] (input.east) -- (1.75,1.5) -- (1.75,2.85) -- (cu.west);
+        \draw[<->,thick] (cu.south) -- (alu.north);
+        \draw[<->,thick] (alu.south) -- (mu.north);
+        \draw[->,thick,rounded corners=4pt] (cu.east) -- (5.0,2.85) -- (5.0,1.5) -- (output.west);
+        \draw[->,dashed,rounded corners=4pt] (mu.east) -- (5.35,0.15) -- (5.35,2.45) -- (cu.east);
       \end{tikzpicture}%
     }
     \caption{输入输出流程}
   \end{subfigure}
 
-  \par\medskip
+  \par\smallskip
 
-  \begin{subfigure}[t]{0.48\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
     \centering
-    \resizebox{0.72\linewidth}{!}{%
-      \begin{tikzpicture}[>=Stealth,node distance=10mm,
-        n/.style={draw,circle,inner sep=2pt}]
-        \node[n] (a) {$A$}; \node[n,right=of a] (b) {$B$}; \node[n,below=of a] (c) {$C$};
-        \node[n,below=of b] (d) {$D$};
-        \draw[->] (a)--(b); \draw[->] (a)--(c); \draw[->] (c)--(d); \draw[->] (b)--(d);
+    \resizebox{\linewidth}{!}{%
+      \begin{tikzpicture}[>=Stealth, every node/.style={font=\small},
+        vertex/.style={draw,circle,minimum size=8mm,inner sep=1pt,fill=white}]
+        \useasboundingbox (-0.1,-0.1) rectangle (7.2,3.5);
+        \node[vertex] (a) at (3.55,3.0) {A};
+        \node[vertex] (b) at (5.35,2.28) {B};
+        \node[vertex] (c) at (5.95,1.13) {C};
+        \node[vertex] (d) at (4.75,0.35) {D};
+        \node[vertex] (e) at (2.35,0.35) {E};
+        \node[vertex] (f) at (1.05,1.13) {F};
+        \node[vertex] (g) at (1.62,2.28) {G};
+        \draw[->] (d) -- (c);
+        \draw[->] (e) to[bend left=18] (b);
+        \draw[->] (b) to[bend left=18] (e);
+        \draw[->] (a) -- (e);
+        \draw[->] (d) -- (a);
+        \draw[->] (f) to[bend left=20] (g);
+        \draw[->] (g) to[bend left=20] (f);
       \end{tikzpicture}%
     }
     \caption{有向网络}
   \end{subfigure}\hfill
-  \begin{subfigure}[t]{0.48\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
     \centering
-    \resizebox{0.72\linewidth}{!}{%
-      \begin{tikzpicture}[>=Stealth,node distance=7mm,
-        n/.style={draw,circle,inner sep=2pt}]
-        \node[n,fill=blue!12] (a) {$x_1$}; \node[n,fill=blue!12,right=of a] (b) {$x_2$};
-        \node[n,fill=orange!15,below=of a] (c) {$y_1$}; \node[n,fill=orange!15,right=of c] (d) {$y_2$};
-        \draw[->] (a)--(c); \draw[->] (b)--(d);
+    \resizebox{\linewidth}{!}{%
+      \begin{tikzpicture}[>=Stealth, every node/.style={font=\scriptsize},
+        obj/.style={font=\small}]
+        \useasboundingbox (-0.1,-0.1) rectangle (7.2,3.5);
+        \draw[rounded corners=4pt,draw=cyan!70!black,fill=cyan!4,line width=1pt] (0.15,1.2) rectangle (3.55,3.25);
+        \draw[rounded corners=4pt,draw=cyan!70!black,fill=cyan!4,line width=1pt] (4.25,1.2) rectangle (6.95,3.25);
+        \draw[rounded corners=4pt,draw=green!65!black,fill=green!4,line width=1pt] (0.15,0.08) rectangle (3.55,0.95);
+        \draw[rounded corners=4pt,draw=green!65!black,fill=green!4,line width=1pt] (4.25,0.08) rectangle (6.95,0.95);
+        \node[obj] (sa) at (1.0,2.78) {$Sa$};
+        \node[obj] (tb) at (2.75,2.78) {$Tb$};
+        \node[obj] (sap) at (1.0,1.65) {$Sa'$};
+        \node[obj] (tbp) at (2.75,1.65) {$Tb'$};
+        \node[obj] (tuple) at (5.6,2.78) {$(a,b,f)$};
+        \node[obj] (tuplep) at (5.6,1.65) {$(a',b',f')$};
+        \node[obj] (sa-small) at (1.0,0.52) {$Sa$};
+        \node[obj] (tb-small) at (2.75,0.52) {$Tb$};
+        \node[obj] (tuple-small) at (5.6,0.52) {$(a,b,f)$};
+        \draw[->] (sa) -- node[above] {$f$} (tb);
+        \draw[->] (sap) -- node[above] {$f'$} (tbp);
+        \draw[->] (sa) -- node[left] {$\alpha$} (sap);
+        \draw[->] (tb) -- node[right] {$\beta$} (tbp);
+        \draw[->] (tuple) -- node[right] {$(\alpha,\beta)$} (tuplep);
+        \draw[<->,cyan!70!black,line width=1pt] (3.62,2.2) -- (4.18,2.2);
+        \draw[<->,black,line width=0.8pt] (1.85,1.08) -- (1.85,1.17);
+        \draw[<->,black,line width=0.8pt] (5.6,1.08) -- (5.6,1.17);
+        \draw[->] (sa-small) -- node[above] {$f$} (tb-small);
+        \draw[<->,green!65!black,line width=1pt] (3.62,0.52) -- (4.18,0.52);
       \end{tikzpicture}%
     }
     \caption{节点分组}
   \end{subfigure}
 
-  \par\medskip
+  \par\smallskip
 
-  \begin{subfigure}[t]{0.48\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
     \centering
-    \resizebox{0.88\linewidth}{!}{%
-      \begin{tikzpicture}[>=Stealth,node distance=10mm,
-        n/.style={draw,align=center,minimum width=21mm,minimum height=8mm}]
-        \node[n] (a) {Observer\\+ read()};
-        \node[n,right=of a] (b) {Estimator\\+ update()};
-        \draw[->] (a)--node[above] {data}(b);
+    \resizebox{\linewidth}{!}{%
+      \begin{tikzpicture}[>=Stealth, every node/.style={font=\scriptsize},
+        class/.style={draw=gray!65,fill=white,align=center,minimum width=19mm,minimum height=8mm,font=\bfseries}]
+        \useasboundingbox (-0.1,-0.1) rectangle (7.2,3.5);
+        \node[class] (diagram) at (3.55,2.92) {Diagram};
+        \node[class] (node) at (1.45,1.45) {Node};
+        \node[class] (edge) at (5.65,1.45) {Edge};
+        \node[class] (mark) at (5.65,0.3) {Mark};
+        \draw (diagram.south) -- (3.55,2.35) -- (1.45,2.35) -- (node.north);
+        \draw (3.55,2.35) -- (5.65,2.35) -- (edge.north);
+        \node[above left,inner sep=1pt] at (3.48,2.87) {$1$};
+        \node[above,inner sep=1pt] at (1.45,1.95) {$0..n$};
+        \node[above,inner sep=1pt] at (5.65,1.95) {$0..n$};
+        \draw (edge.south) -- node[right,fill=white,inner sep=1pt] {$1..n$} (mark.north);
+        \draw[->,cyan!70!black] (edge.west) -- node[above,fill=white,inner sep=1pt] {snap} (node.east);
+        \draw[->,orange!85!black,bend left=34] (node.west) to node[left,fill=white,inner sep=1pt] {layout} (diagram.west);
       \end{tikzpicture}%
     }
     \caption{UML 接口关系}
   \end{subfigure}\hfill
-  \begin{subfigure}[t]{0.48\textwidth}
+  \begin{subfigure}[t]{0.49\textwidth}
     \centering
-    \resizebox{0.50\linewidth}{!}{%
-      \begin{tikzpicture}[>=Stealth,node distance=7mm,
-        n/.style={draw,rounded corners,align=center,minimum width=20mm}]
-        \node[n] (a) {向量空间}; \node[n,below=of a] (b) {内积空间};
-        \node[n,below=of b] (c) {Hilbert 空间};
-        \draw[->] (a)--(b); \draw[->] (b)--(c);
+    \resizebox{\linewidth}{!}{%
+      \begin{tikzpicture}[>=Stealth, every node/.style={font=\scriptsize},
+        algebra/.style={draw=none,fill=gray!8,inner sep=2pt,minimum height=5mm,align=center}]
+        \useasboundingbox (-0.1,-0.1) rectangle (7.2,3.5);
+        \node[algebra] (magma) at (3.6,3.2) {magma};
+        \node[algebra] (semi) at (1.25,2.35) {semigroup};
+        \node[algebra] (unital) at (3.6,2.35) {unital magma};
+        \node[algebra] (quasi) at (5.95,2.35) {quasigroup};
+        \node[algebra] (monoid) at (1.25,1.35) {monoid};
+        \node[algebra] (invsemi) at (3.6,1.35) {inverse semigroup};
+        \node[algebra] (loop) at (5.95,1.35) {loop};
+        \node[algebra] (group) at (3.6,0.35) {group};
+        \draw[->,blue!75!black] (magma) -- node[above left,fill=white,inner sep=1pt] {Assoc} (semi);
+        \draw[->,red!75!black] (magma) -- node[right,fill=white,inner sep=1pt] {Id} (unital);
+        \draw[->,yellow!65!black] (magma) -- node[above right,fill=white,inner sep=1pt] {Div} (quasi);
+        \draw[->,red!75!black] (semi) -- node[left,fill=white,inner sep=1pt] {Id} (monoid);
+        \draw[->,yellow!65!black] (semi) to[bend right=8] (invsemi);
+        \node[font=\scriptsize,text=yellow!65!black,fill=white,inner sep=1pt] at (2.0,2.08) {Div};
+        \draw[->,blue!75!black] (unital) to[bend right=8] (monoid);
+        \node[font=\scriptsize,text=blue!75!black,fill=white,inner sep=1pt] at (2.85,1.62) {Assoc};
+        \draw[->,green!60!black] (unital) -- node[right,fill=white,inner sep=1pt] {Inv} (invsemi);
+        \draw[->,blue!75!black] (quasi) to[bend left=8] node[above,fill=white,inner sep=1pt] {Assoc} (invsemi);
+        \draw[->,red!75!black] (quasi) -- node[right,fill=white,inner sep=1pt] {Id} (loop);
+        \draw[->,green!60!black] (monoid) -- node[above left,fill=white,inner sep=1pt] {Inv} (group);
+        \draw[->,red!75!black] (invsemi) -- node[right,fill=white,inner sep=1pt] {Id} (group);
+        \draw[->,blue!75!black] (loop) -- node[above right,fill=white,inner sep=1pt] {Assoc} (group);
       \end{tikzpicture}%
     }
     \caption{代数结构层级}
   \end{subfigure}
-  \caption{工程模块图组：架构、流程、网络、分组、接口与代数层级}
+  \caption{工程模块图组：层级架构、输入输出流程、有向网络、节点分组、UML 接口与代数结构}
   \label{fig:engineering-diagrams}
 \end{figure}
 
