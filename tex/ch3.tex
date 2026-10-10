@@ -29,7 +29,102 @@
 为了展示状态关系的几种表达方式，图~\ref{fig:ch3-relations}并列给出交换关系、范畴关系、离散状态机和层级状态树。交换图强调不同路径之间的一致性，范畴图表示对象与态射之间的映射，状态机描述状态转移，层级树则呈现对象的分类结构。正式研究应在图前定义节点集合和映射，在图后说明图中的关系如何对应式~\eqref{eq:state-update}。
 \begin{figure}[htbp]
   \centering
-  \input{fig/tex/gallery-31-body.tex}
+  % The four panels share the content and two-by-two layout of the source figure.
+  \begin{subfigure}[t]{0.49\textwidth}
+    \centering
+    \resizebox{\linewidth}{!}{%
+      \begin{tikzpicture}[>=Stealth, every node/.style={font=\scriptsize}]
+        \useasboundingbox (0,-0.8) rectangle (6,2.4);
+        \node (top-left) at (2.05,1.911)
+          {$\tau^{*}\!\left(AB^{n}\dfrac{R}{R^{\times}}\right)$};
+        \node (top-right) at (4.75,1.911)
+          {$B^{n}\dfrac{R}{R^{\times}}$};
+        \node (left) at (0.55,0.367) {$X$};
+        \node (middle) at (2.8,0.367) {$X$};
+        \node (right) at (5.0,0.367) {$\boldsymbol{B}R^{\times}$};
+        \draw[->] (top-left) -- (top-right);
+        \draw[->] (top-left.south) -- (middle.north);
+        \draw[->] (top-right.south) -- (right.north);
+        \draw[dashed,->] (left.north east) -- (top-left.south west);
+        \draw[double,double distance=1.2pt] (left.east) -- (middle.west);
+        \draw[->] (middle) -- node[above] {$\tau$} (right);
+        \draw[->,blue,thick] (right.south) -- (5.0,-0.578) --
+          (0.55,-0.578) -- (left.south);
+        \node[blue,fill=white,inner sep=1pt] at (2.78,-0.578) {$\Gamma_R^{*}$};
+      \end{tikzpicture}%
+    }
+    \caption{交换关系}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+    \centering
+    \resizebox{\linewidth}{!}{%
+      \begin{tikzpicture}[>=Stealth, every node/.style={font=\scriptsize}]
+        \useasboundingbox (0,-0.8) rectangle (6,2.4);
+        \node (id) at (0.45,1.806) {$\mathrm{id}_S\in$};
+        \node (hom-top) at (1.95,1.806) {$\operatorname{Hom}_{\mathcal C}(S,S)$};
+        \node (a-top) at (4.00,1.806) {$A(S)$};
+        \node (u) at (5.55,1.806) {$\ni u_S$};
+        \node (f) at (0.45,0.263) {$f\in$};
+        \node (hom-bottom) at (1.95,0.263) {$\operatorname{Hom}_{\mathcal C}(T,S)$};
+        \node (a-bottom) at (4.00,0.263) {$A(T)$};
+        \node (phi) at (5.55,0.263) {$\ni\phi_T(f)$};
+        \draw[->] (hom-top) -- node[above] {$\phi_S$} (a-top);
+        \draw[->] (hom-bottom) -- node[above] {$\phi_T$} (a-bottom);
+        \draw[->] (id) -- (f);
+        \draw[->] (hom-top) -- node[right] {$f^{*}$} (hom-bottom);
+        \draw[->] (a-top) -- node[right] {$A(f)$} (a-bottom);
+        \draw[->] (u) -- (phi);
+      \end{tikzpicture}%
+    }
+    \caption{范畴关系}
+  \end{subfigure}
+
+  \par\smallskip
+
+  \begin{subfigure}[t]{0.49\textwidth}
+    \centering
+    \resizebox{\linewidth}{!}{%
+      \begin{tikzpicture}[>=Stealth, every node/.style={font=\scriptsize},
+        state/.style={draw,circle,minimum size=12mm,inner sep=1pt,fill=blue!12}]
+        \useasboundingbox (0,-0.8) rectangle (6,2.4);
+        \node[state] (reading) at (1.45,0.473) {reading};
+        \node[state] (eof) at (3.35,0.473) {eof};
+        \node[state,double,double distance=2pt] (closed) at (5.2,0.473) {closed};
+        \draw[->] (0.05,0.473) -- node[above] {open(path)} (reading.west);
+        \draw[->] (reading.east) -- node[above] {read()} (eof.west);
+        \draw[->] (eof.east) -- node[above] {close()} (closed.west);
+        \draw[->] (reading) to[loop above] node[above=2pt] {read()} (reading);
+        \draw[->] (reading.south east) to[bend right=32]
+          node[below] {close()} (closed.south west);
+      \end{tikzpicture}%
+    }
+    \caption{离散状态机}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.49\textwidth}
+    \centering
+    \resizebox{\linewidth}{!}{%
+      \begin{tikzpicture}[>=Stealth, every node/.style={font=\scriptsize},
+        tree-node/.style={draw=gray!55,fill=white,align=center,font=\tiny,
+          text width=13mm,minimum height=6mm,inner sep=1.5pt},
+        tree-node-wide/.style={tree-node,text width=18mm}]
+        \useasboundingbox (0,-0.8) rectangle (6,2.4);
+        \node[tree-node] (root) at (3.0,2.047) {Entrate\\pubblicitarie};
+        \node[tree-node] (impr) at (1.55,0.892) {Numero di\\impression};
+        \node[tree-node-wide] (gain) at (4.45,0.892) {Guadagno medio\\per impression};
+        \node[tree-node] (traffic) at (0.55,-0.294) {Traffico\\sul sito};
+        \node[tree-node] (ratio) at (2.25,-0.294) {Impression/\\visitatori};
+        \node[tree-node] (sales) at (3.75,-0.294) {Modalità\\di vendita};
+        \node[tree-node] (placement) at (5.45,-0.294) {Tipo di\\posi\-zionamento};
+        \draw[->] (root.south west) -- (impr.north);
+        \draw[->] (root.south east) -- (gain.north);
+        \draw[->] (impr.south west) -- (traffic.north);
+        \draw[->] (impr.south east) -- (ratio.north);
+        \draw[->] (gain.south west) -- (sales.north);
+        \draw[->] (gain.south east) -- (placement.north);
+      \end{tikzpicture}%
+    }
+    \caption{层级状态树}
+  \end{subfigure}
   \caption{状态关系图组：交换图、范畴图、状态机与层级树}
   \label{fig:ch3-relations}
 \end{figure}
