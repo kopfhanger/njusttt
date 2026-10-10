@@ -1,0 +1,63 @@
+% Adapted structural-diagram examples based on the PGF/TikZ manual:
+% node positioning, decision shapes, radial concept maps, and directed edges.
+\begin{tikzpicture}[>=Stealth,
+  process/.style={draw,rounded corners=2pt,fill=blue!5,minimum width=17mm,
+    minimum height=8mm,align=center,font=\scriptsize},
+  state/.style={draw,circle,fill=teal!8,minimum size=8mm,inner sep=1pt,
+    font=\scriptsize},
+  decision/.style={draw,diamond,aspect=2,fill=orange!8,inner sep=1pt,
+    align=center,font=\scriptsize},
+  panel title/.style={font=\small\bfseries}
+]
+  % Top-left: directed dependency network.
+  \node[panel title] at (3.0,0.18) {有向依赖网络};
+  \node[draw,ellipse,fill=orange!12,inner sep=2pt,font=\scriptsize] (g21-theta) at (0.55,-1.15) {$\theta$};
+  \node[state] (g21-state) at (2.45,-1.15) {$x_k$};
+  \node[draw,rectangle,rounded corners,fill=blue!7,inner sep=3pt,font=\scriptsize] (g21-obs) at (4.75,-1.15) {$y_k$};
+  \node[draw,ellipse,fill=gray!10,inner sep=2pt,font=\scriptsize] (g21-noise) at (4.75,-2.25) {$v_k$};
+  \draw[->,thick] (g21-theta)--(g21-state);
+  \draw[->,thick] (g21-state)--(g21-obs);
+  \draw[->,thick] (g21-noise)--(g21-obs);
+  \node[font=\tiny,align=center] at (2.45,-2.12) {变量依赖关系};
+
+  % Top-right: a decision flowchart.
+  \node[panel title] at (10.0,0.18) {判断流程图};
+  \node[process] (g21-input) at (7.45,-1.15) {输入参数};
+    \node[decision] (g21-check) at (9.95,-1.15) {误差\\可接受？};
+  \node[process] (g21-output) at (12.45,-0.58) {输出结果};
+  \node[process] (g21-refine) at (12.45,-1.78) {调整网格};
+  \draw[->,thick] (g21-input)--(g21-check);
+  \draw[->,thick] (g21-check)--node[above,font=\tiny]{是}(g21-output);
+  \draw[->,thick] (g21-check)--node[below,font=\tiny]{否}(g21-refine);
+  \draw[->,thick] (g21-refine.south) |- (g21-input.south);
+
+  % Bottom-left: radial concept map.
+  \node[panel title] at (3.0,-3.32) {概念图};
+  \node[draw,circle,fill=teal!12,minimum size=13mm,inner sep=1pt,
+    font=\scriptsize] (g21-root) at (3.0,-5.75) {状态空间};
+  \node[draw,circle,fill=blue!9,minimum size=10mm,inner sep=1pt,
+    font=\scriptsize] (g21-state-concept) at (3.0,-4.35) {状态};
+  \node[draw,circle,fill=orange!13,minimum size=10mm,inner sep=1pt,
+    font=\scriptsize] (g21-parameter-concept) at (4.65,-5.75) {参数};
+  \node[draw,circle,fill=green!10,minimum size=10mm,inner sep=1pt,
+    font=\scriptsize] (g21-observation-concept) at (3.0,-7.15) {观测};
+  \node[draw,circle,fill=red!9,minimum size=10mm,inner sep=1pt,
+    font=\scriptsize] (g21-error-concept) at (1.35,-5.75) {误差};
+  \draw[thick] (g21-root)--(g21-state-concept);
+  \draw[thick] (g21-root)--(g21-parameter-concept);
+  \draw[thick] (g21-root)--(g21-observation-concept);
+  \draw[thick] (g21-root)--(g21-error-concept);
+
+  % Bottom-right: event timeline.
+  \node[panel title] at (10.0,-3.32) {事件时间线};
+  \draw[->,thick] (7.15,-5.05)--(13.0,-5.05) node[right,font=\scriptsize] {$t$};
+  \draw[thick] (7.85,-4.88)--(7.85,-5.22);
+  \draw[thick] (10.0,-4.88)--(10.0,-5.22);
+  \draw[thick] (12.15,-4.88)--(12.15,-5.22);
+  \node[font=\tiny,align=center] at (7.85,-4.58) {初始化};
+  \node[font=\tiny,align=center] at (10.0,-5.72) {状态更新};
+  \node[font=\tiny,align=center] at (12.15,-4.58) {观测};
+  \node[font=\scriptsize] at (7.85,-5.48) {$t_0$};
+  \node[font=\scriptsize] at (10.0,-5.48) {$t_1$};
+  \node[font=\scriptsize] at (12.15,-5.48) {$t_2$};
+\end{tikzpicture}

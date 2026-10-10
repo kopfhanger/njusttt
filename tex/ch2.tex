@@ -8,74 +8,15 @@
 
 针对超音速牛奶喷射过程，示例模型将喷嘴出口速度、流体黏度和环境压力作为主要参数，并在稳态条件下讨论喷流的形成与传播。设喷嘴出口截面积为 $A_0$、特征长度为 $L$、流体密度为 $\rho$，则质量流率可以作为连接实验观测与动力学模型的中间量。实际论文中应给出装置、测量不确定度和边界条件，而不应只保留符号定义。
 
-为了说明物理过程、几何关系和状态变量之间的差别，图~\ref{fig:ch2-schematics}将四种常见示意图放在同一组中：波动场、三角几何关系、场线与介质以及表达式树。示意图帮助读者理解变量关系，并不替代实验装置图或数值结果。
+为区分变量依赖、计算流程、概念层次和事件次序，图~\ref{fig:ch2-schematics}并列给出四类结构图。依赖网络表示模型变量之间的有向联系，流程图突出判断与迭代步骤，概念图组织状态空间中的要素，时间线则标出状态更新和观测的先后关系。它们都是结构说明示例，不替代实验装置图或数值结果。
 \begin{figure}[htbp]
   \centering
-  \subfigure[叠加波动场]{%
-    \begin{minipage}[c][2.7cm][c]{0.47\textwidth}
-      \centering
-      \begin{tikzpicture}[x=1cm,y=0.8cm]
-        \draw[-{Stealth[length=1.5mm]}] (0,0)--(6.4,0) node[right] {$x$};
-        \draw[-{Stealth[length=1.5mm]}] (0,-1.45)--(0,1.45) node[above] {$u$};
-        \draw[blue!70!black,thick,domain=0:5.9,samples=90,smooth]
-          plot(\x,{0.55*sin(120*\x)});
-        \draw[red!75!black,thick,domain=0:5.9,samples=90,smooth]
-          plot(\x,{0.45*sin(120*\x+50)});
-        \draw[black,thick,domain=0:5.9,samples=90,smooth]
-          plot(\x,{0.55*sin(120*\x)+0.45*sin(120*\x+50)});
-      \end{tikzpicture}
-    \end{minipage}%
-  }%
-  \hfill
-  \subfigure[几何关系与角度]{%
-    \begin{minipage}[c][2.7cm][c]{0.47\textwidth}
-      \centering
-      \begin{tikzpicture}[x=1cm,y=1cm]
-        \draw[thick] (0,0)--(5.4,0)--(5.4,2.5)--cycle;
-        \draw (5.05,0)--(5.05,0.35)--(5.4,0.35);
-        \draw (0.85,0) arc (0:25:0.85);
-        \node at (1.05,0.2) {$\theta$};
-        \node[below] at (2.7,0) {$L$};
-        \node[right] at (5.4,1.25) {$h$};
-      \end{tikzpicture}
-    \end{minipage}%
-  }%
-  \par\vspace{1mm}
-  \subfigure[场线与介质区域]{%
-    \begin{minipage}[c][2.7cm][c]{0.47\textwidth}
-      \centering
-      \begin{tikzpicture}[x=1cm,y=1cm]
-        \draw[thick] (0,0) rectangle (6.2,2.25);
-        \fill[blue!8] (2.15,0.15) rectangle (4.05,2.1);
-        \draw[thick] (2.15,0.15) rectangle (4.05,2.1);
-        \foreach \y in {0.35,0.72,1.09,1.46,1.83}
-          \draw[-{Stealth[length=1.5mm]},blue!70!black] (0.22,\y)--(5.98,\y);
-        \node[fill=white,inner sep=1.5pt] at (3.1,1.09) {介质};
-      \end{tikzpicture}
-    \end{minipage}%
-  }%
-  \hfill
-  \subfigure[表达式树结构]{%
-    \begin{minipage}[c][2.7cm][c]{0.47\textwidth}
-      \centering
-      \begin{tikzpicture}[x=1.15cm,y=1cm,
-        every node/.style={draw,circle,inner sep=2pt,minimum size=5mm},
-        every path/.style={thick}
-      ]
-        \node (mul) at (3.1,2.25) {$\times$};
-        \node (add) at (1.75,1.15) {$+$};
-        \node (c) at (4.45,1.15) {$c$};
-        \node (a) at (1.0,0.05) {$a$};
-        \node (b) at (2.5,0.05) {$b$};
-        \draw (mul)--(add) (mul)--(c) (add)--(a) (add)--(b);
-      \end{tikzpicture}
-    \end{minipage}%
-  }%
-  \caption{建模视角示意图组：连续场、几何约束、介质区域与离散结构}
+  \input{fig/tex/gallery-21-body.tex}
+  \caption{结构关系与流程图示例组}
   \label{fig:ch2-schematics}
 \end{figure}
 
-这些图形分别对应连续场、几何约束、介质区域和离散结构四种建模视角。真实论文中应为每张图配套说明变量、边界条件和数据来源，而不是把绘图工具本身作为结果。
+图中的节点、箭头和时间标记各自承担明确的语义；正式研究应在图注或正文中给出变量定义、边界条件及数据来源。
 
 在连续介质近似下，速度场 $\bm{v}$ 的旋度和梯度可以使用统一的向量记号表达：
 \begin{equation}
@@ -113,64 +54,15 @@
 
 在真实论文中，实验量应始终与单位绑定。例如，喷嘴出口速度、测量误差和有效工作区间可以分别用 `\qty{340}{\meter\per\second}`、`\qty{340 \pm 5}{\meter\per\second}` 和 `\qtyrange{0.20}{0.80}{\milli\meter}` 表示。应先确认所用单位宏包的版本与模板兼容，再将同一接口用于全文。
 
-为了避免只展示平均值，本章再给出一组小型数据诊断图。折线图带有误差线，散点图用颜色表达第三个量，柱状图适合汇总离散指标，箱线图则用于比较重复实验的分布。图~\ref{fig:ch2-diagnostics}中的数据是排版示例，正式论文中应替换为真实观测值，并在正文中解释误差来源。
+为并列呈现观测不确定性、样本分布、离散误差和重复实验统计，图~\ref{fig:ch2-diagnostics}给出误差线曲线、频数直方图、双对数收敛曲线和箱线图。图中数据仅用于说明不同图形所回答的问题；正式论文应替换为真实观测值，并解释误差来源。
 \begin{figure}[htbp]
   \centering
-  \subfigure[误差线折线图]{
-    \begin{tikzpicture}
-      \begin{axis}[width=.46\textwidth,height=3.5cm,xmin=0,xmax=5,ymin=0.8,ymax=3.2,
-        xlabel={$x$},ylabel={$y$},tick label style={font=\scriptsize},
-        label style={font=\scriptsize},grid=major,grid style={black!12}]
-        \addplot+[blue,mark=*,error bars/.cd,y dir=both,y explicit]
-          coordinates {(0,1.2) +- (0,0.15) (1,1.8) +- (0,0.12) (2,1.5) +- (0,0.18)
-                       (3,2.2) +- (0,0.15) (4,2.6) +- (0,0.20) (5,2.9) +- (0,0.16)};
-      \end{axis}
-    \end{tikzpicture}}
-  \hfill
-  \subfigure[彩色散点图]{
-    \begin{tikzpicture}
-      \begin{axis}[width=.46\textwidth,height=3.5cm,xmin=-.2,xmax=5.2,ymin=.8,ymax=3.2,
-        xlabel={$x$},ylabel={$y$},tick label style={font=\scriptsize},
-        label style={font=\scriptsize},grid=major,grid style={black!12},
-        colormap/viridis,colorbar,colorbar style={width=1.5mm,tick label style={font=\tiny}}]
-        \addplot[only marks,scatter,point meta=explicit,mark=*,mark size=1.6pt]
-          table[meta=c,row sep=crcr] {
-            x y c\\
-            0 1.2 1\\
-            1 1.8 2\\
-            2 1.5 3\\
-            3 2.2 4\\
-            4 2.6 5\\
-            5 2.9 6\\
-          };
-      \end{axis}
-    \end{tikzpicture}}
-  \\
-  \subfigure[指标柱状图]{
-    \begin{tikzpicture}
-      \begin{axis}[width=.46\textwidth,height=3.5cm,ymin=0,ymax=3.0,
-        ybar,bar width=8pt,symbolic x coords={1,2,3,4},xtick=data,
-        xlabel={指标},ylabel={数值},tick label style={font=\scriptsize},
-        label style={font=\scriptsize},grid=major,grid style={black!12},
-        nodes near coords, nodes near coords style={font=\tiny}]
-        \addplot[fill=teal!55,draw=teal!70!black] coordinates {(1,1.3) (2,2.1) (3,1.7) (4,2.6)};
-      \end{axis}
-    \end{tikzpicture}}
-  \hfill
-  \subfigure[重复实验分布]{
-    \begin{tikzpicture}
-      \begin{axis}[width=.46\textwidth,height=3.5cm,ymin=.8,ymax=3.2,
-        boxplot/draw direction=y,xtick={1,2,3},xticklabels={A,B,C},
-        xlabel={重复实验组},ylabel={观测值},tick label style={font=\scriptsize},
-        label style={font=\scriptsize},grid=major,grid style={black!12}]
-        \addplot+[boxplot prepared={lower whisker=1.0,lower quartile=1.3,median=1.6,upper quartile=2.2,upper whisker=2.8},fill=blue!15] coordinates {};
-        \addplot+[boxplot prepared={lower whisker=1.4,lower quartile=1.8,median=2.1,upper quartile=2.55,upper whisker=3.0},fill=teal!15] coordinates {};
-        \addplot+[boxplot prepared={lower whisker=1.1,lower quartile=1.65,median=2.0,upper quartile=2.35,upper whisker=2.9},fill=orange!18] coordinates {};
-      \end{axis}
-    \end{tikzpicture}}
-  \caption{重复实验数据的诊断图组}
+  \input{fig/tex/gallery-23-body.tex}
+  \caption{不确定性、分布与收敛诊断图组}
   \label{fig:ch2-diagnostics}
 \end{figure}
+
+误差线表示观测范围，直方图概括样本频数，双对数图用于观察误差随网格尺度的变化，箱线图比较重复实验的分布。
 
 \subsection{公式、参数与三线表示例}
 

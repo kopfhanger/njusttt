@@ -1,0 +1,38 @@
+% Adapted PGFPlots group-plot example for response, residual, convergence, and coverage.
+\begin{tikzpicture}
+  \begin{groupplot}[
+    group style={group size=2 by 2,horizontal sep=11mm,vertical sep=15mm},
+    width=61mm,height=30mm,
+    tick label style={font=\scriptsize},label style={font=\scriptsize},
+    title style={font=\small},grid=major,grid style={black!12},
+  ]
+    \nextgroupplot[title={观测与模型响应},xlabel={$t$},ylabel={$P(t)$},
+      xmin=0,xmax=6,ymin=.2,ymax=.9]
+      \addplot+[only marks,black,mark=*,error bars/.cd,y dir=both,y explicit]
+        coordinates {(0,.48)+-(0,.04) (1,.62)+-(0,.05) (2,.74)+-(0,.04)
+          (3,.69)+-(0,.05) (4,.58)+-(0,.04) (5,.46)+-(0,.04) (6,.38)+-(0,.03)};
+      \addplot+[blue!70!black,thick,no markers,smooth]
+        coordinates {(0,.50) (1,.60) (2,.70) (3,.67) (4,.57) (5,.45) (6,.39)};
+
+    \nextgroupplot[title={残差随时间变化},xlabel={$t$},ylabel={$e(t)$},
+      xmin=0,xmax=6,ymin=-.2,ymax=.2]
+      \addplot+[only marks,teal!70!black,mark=square*]
+        coordinates {(0,-.02) (1,.04) (2,.09) (3,.02) (4,-.03) (5,.01) (6,-.01)};
+      \addplot[black,dashed,no markers,domain=0:6] {0};
+
+    \nextgroupplot[title={离散误差收敛},xlabel={$h$},ylabel={误差},
+      xmode=log,ymode=log,xmin=.08,xmax=1.1,ymin=.001,ymax=.5,
+      log ticks with fixed point,
+      xtick={1,.5,.25,.125},ytick={.1,.01,.001},
+      xticklabel style={/pgf/number format/fixed,/pgf/number format/precision=3}]
+      \addplot+[mark=*,blue!70!black,thick] coordinates
+        {(1,.32) (.5,.081) (.25,.020) (.125,.0051)};
+      \addplot+[black,dashed,no markers,domain=.1:1,samples=40] {0.32*x^2};
+
+    \nextgroupplot[title={区间覆盖率},xlabel={样本量},ylabel={覆盖率},
+      xmin=100,xmax=1000,ymin=.82,ymax=1.0,xtick={100,400,700,1000}]
+      \addplot+[only marks,mark=triangle*,orange!80!black]
+        coordinates {(100,.89) (250,.92) (400,.95) (600,.94) (800,.96) (1000,.95)};
+      \addplot[black,dashed,no markers,domain=100:1000] {.95};
+  \end{groupplot}
+\end{tikzpicture}
