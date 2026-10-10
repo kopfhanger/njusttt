@@ -1,1 +1,231 @@
 \chapter{时间旅行的概率动力学研究}
+
+本章内容是模板示例，用于展示理论基础、概率模型、数学分析和中文定义/定理环境的组织方式。本文中的时间分支模型是形式化算例，不构成关于现实时间旅行可行性的证据。
+
+\section{理论基础}
+
+\subsection{相对论框架}
+
+示例内容从参考系、时间参数和状态转移三个方面说明模型的基本假设。相对论中的时空结构决定事件之间的因果关系；若形式模型允许沿闭合类时曲线返回较早的时刻，还需要增加一致性条件，防止状态沿一周演化后与初始条件矛盾。这里仅把这些条件作为离散状态模型的约束来源，不尝试推导新的时空解。
+
+\subsection{量子效应}
+
+若研究涉及离散状态或不确定性，可在本节说明状态空间、转移概率以及观测量的定义。为展示中文学位论文中的定理环境，本章采用无边框的定义、定理与证明格式。
+
+\begin{defn}[可逆状态转移]
+若状态转移算子 $\bm{A}$ 可逆，则称该离散模型在给定状态空间上可逆。
+\end{defn}
+
+\begin{thm}[状态转移的可逆性]
+若 $\bm{A}$ 可逆且 $\bm{x}_{k+1}=\bm{A}\bm{x}_k$，则由终态 $\bm{x}_{k+1}$ 可以唯一恢复 $\bm{x}_k$。
+\end{thm}
+
+\begin{proof}
+左乘 $\bm{A}^{-1}$ 得 $\bm{x}_k=\bm{A}^{-1}\bm{x}_{k+1}$。由于 $\bm{A}^{-1}$ 存在，给定终态后恢复结果唯一。
+\end{proof}
+
+上述定义和定理的编号会随章节自动重置；真实论文可继续增加引理、推论和定理证明，而不需要手工维护编号。
+
+为了把抽象的状态转移关系具体化，图~\ref{fig:ch3-relations}给出几类关系图。交换图适合表达两个映射的兼容性，范畴图表达对象和态射，状态机表达离散演化过程，树图表达层级化的状态分解。图中的箭头表示关系方向，节点表示状态、对象或中间变量。对于真实论文，应在图前定义节点集合和映射，在图后说明哪些箭头对应式~\eqref{eq:state-update}，避免用图形替代数学定义。
+\begin{figure}[htbp]
+  \centering
+  \subfigure[交换关系]{
+    \begin{tikzpicture}[>=Stealth,node distance=22mm]
+      \node (a) {$X$}; \node[right=of a] (b) {$Y$};
+      \node[below=of a] (c) {$X'$}; \node[right=of c] (d) {$Y'$};
+      \draw[->] (a)--node[above] {$f$}(b);
+      \draw[->] (a)--node[left] {$g$}(c);
+      \draw[->] (b)--node[right] {$g'$}(d);
+      \draw[->] (c)--node[below] {$f'$}(d);
+    \end{tikzpicture}}
+  \hfill
+  \subfigure[范畴关系]{
+    \begin{tikzpicture}[>=Stealth,node distance=18mm]
+      \node (a) {$A$}; \node[right=of a] (b) {$B$}; \node[right=of b] (c) {$C$};
+      \draw[->] (a)--node[above] {$f$}(b);
+      \draw[->] (b)--node[above] {$g$}(c);
+      \draw[->,bend right=28] (a) to node[below] {$g\circ f$} (c);
+    \end{tikzpicture}}
+  \\
+  \subfigure[离散状态机]{
+    \begin{tikzpicture}[>=Stealth,node distance=25mm,
+      state/.style={draw,circle,minimum size=9mm}]
+      \node[state] (s0) {$s_0$}; \node[state,right=of s0] (s1) {$s_1$};
+      \draw[->] (s0) to[bend left=22] node[above] {$p_{01}$} (s1);
+      \draw[->] (s1) to[bend left=22] node[below] {$p_{10}$} (s0);
+      \draw[->,loop above] (s0) to node {$p_{00}$} (s0);
+    \end{tikzpicture}}
+  \hfill
+  \subfigure[层级状态树]{
+    \begin{tikzpicture}[>=Stealth,level distance=9mm,sibling distance=14mm,
+      every node/.style={draw,circle,inner sep=1.2pt}]
+      \node {$s_0$}
+        child {node {$s_1$}
+          child {node {$s_{11}$}}
+          child {node {$s_{12}$}}}
+        child {node {$s_2$}
+          child {node {$s_{21}$}}
+          child {node {$s_{22}$}}};
+    \end{tikzpicture}}
+  \caption{状态关系图组：交换图、范畴图、状态机与层级树}
+  \label{fig:ch3-relations}
+\end{figure}
+
+\section{概率模型}
+
+\subsection{模型参数与边界条件}
+
+离散时间模型由状态向量、控制量、过程噪声和观测噪声构成。初始分布、转移参数和边界条件应由研究对象及其数据来源确定；在本模板中，这些量均作为可替换的示例记号。
+
+\subsection{行内、行间与分段公式}
+
+短表达式适合放在正文中，例如状态转移的离散形式可写为 $\bm{x}_{k+1}=\bm{A}\bm{x}_k+\bm{w}_k$。当公式需要独立展示时，使用带编号的行间公式：
+\begin{equation}
+  \bm{x}_{k+1}=\bm{A}\bm{x}_k+\bm{B}\bm{u}_k+\bm{w}_k.
+  \label{eq:state-update}
+\end{equation}
+
+分段定义可用 \texttt{cases} 环境表示。与普通文本一样，分段公式会自动继承模板的数学字号和章节编号规则。
+\begin{equation}
+  P(X=x_i)=
+  \begin{cases}
+    p_i, & x_i\in S,\\
+    0, & x_i\notin S.
+  \end{cases}
+  \label{eq:piecewise-probability}
+\end{equation}
+
+对于同时给出观测方程和状态方程的场景，可用 \texttt{aligned} 环境将多行内容排成一个公式块：
+\begin{equation}
+  \begin{aligned}
+    \bm{x}_{k+1}&=\bm{A}\bm{x}_k+\bm{B}\bm{u}_k+\bm{w}_k,\\
+    \bm{y}_k&=\bm{C}\bm{x}_k+\bm{v}_k.
+  \end{aligned}
+  \label{eq:state-observation}
+\end{equation}
+
+公式标签也可以跨章节引用，例如式~\eqref{eq:state-update}。真实论文中建议为关键定义、定理和推导保留稳定标签，避免手工维护编号。
+
+\subsection{模型验证与讨论}
+
+为了验证状态转移模型，需要将预测状态与观测状态放在同一时间轴上比较。若观测误差协方差记为 $R$，则一个简单的标准化残差可以写成
+\begin{equation}
+  z_k=\frac{\bm{y}_k-\bm{C}\bm{x}_k}{\sqrt{R}}.
+  \label{eq:standardized-residual}
+\end{equation}
+
+当 $z_k$ 长时间偏离零时，应优先检查观测矩阵、边界条件和时间同步，而不是直接增加模型参数。这个例子也说明，行间公式、解释文字和图表之间应形成连续的推理链；公式不能脱离上下文单独占据页面。
+
+对于多个状态变量，可以进一步报告状态转移矩阵的谱半径、预测误差和收敛步数。正式论文中应在本节给出实验设置、重复次数和统计检验方法，并说明哪些结果来自真实数据，哪些结果只是数值模拟。
+
+\section{数学分析基础}
+
+\subsection{极限、连续与导数}
+
+时间演化的局部性质由导数描述。把位移、速度和加速度写成对时间的各阶导数后，模型的状态量之间就建立了可微的依赖关系，后续的线性化和灵敏度分析都建立在这一步之上。
+\begin{equation}
+  \lim_{h\to0}\frac{f(x_0+h)-f(x_0)}{h}=f'(x_0),\qquad
+  f'(x)=\frac{\mathrm{d}y}{\mathrm{d}x},\qquad
+  f''(x)=\frac{\mathrm{d}^2y}{\mathrm{d}x^2},\qquad
+  \dot{x}(t)=\frac{\mathrm{d}x}{\mathrm{d}t}.
+  \label{eq:derivative}
+\end{equation}
+
+中值定理和泰勒展开把局部导数与整体变化联系起来。工程上常取二阶展开近似代价函数在最优解附近的形状，据此判断迭代收敛是线性还是二次的。
+\begin{equation}
+  f(x_0+h)=f(x_0)+f'(x_0)h+\frac{1}{2}f''(x_0)h^2+O(h^3).
+  \label{eq:taylor}
+\end{equation}
+\begin{equation}
+  f(b)-f(a)=f'(\xi)(b-a),\qquad \xi\in(a,b).
+  \label{eq:mean-value}
+\end{equation}
+
+多尺度模型的渐近分析还要求处理不定式极限。下面两式分别给出小量展开和远场衰减的常用结果，正文中应说明展开成立的量级范围。
+\begin{equation}
+  \lim_{x\to0}\frac{\sin x}{x}=1,\qquad
+  \lim_{x\to\infty}\frac{\ln x}{x^p}=0\quad(p>0),\qquad
+  e^x=\sum_{k=0}^{\infty}\frac{x^k}{k!}.
+  \label{eq:asymptotic-limits}
+\end{equation}
+
+\subsection{最优性条件}
+
+无约束问题的一阶必要条件给出驻点，二阶条件区分极小点与鞍点。把梯度写成向量、把二阶导数写成 Hessian 矩阵后，两个条件可以用同一套记号表达。
+\begin{equation}
+  \min_{\bm{x}\in\mathbb{R}^n}f(\bm{x}),\qquad
+  \nabla f(\bm{x}^*)=\bm{0},\qquad
+  \bm{H}(\bm{x}^*)=
+  \left(\frac{\partial^2f}{\partial x_i\partial x_j}\right)_{ij}\succ0.
+  \label{eq:optimality}
+\end{equation}
+
+带约束的问题用拉格朗日函数处理：等式约束引入乘子，不等式约束引入非负乘子。KKT 条件把原始可行性与对偶可行性、互补松弛写在同一组方程里。
+\begin{equation}
+  \mathcal{L}(\bm{x},\bm{\lambda},\bm{\mu})
+  =f(\bm{x})+\sum_{i=1}^{m}\lambda_i g_i(\bm{x})
+  +\sum_{j=1}^{p}\mu_j h_j(\bm{x}).
+  \label{eq:lagrangian}
+\end{equation}
+\begin{equation}
+  \nabla f(\bm{x}^*)+\sum_{i=1}^{m}\lambda_i\nabla g_i(\bm{x}^*)
+  +\sum_{j=1}^{p}\mu_j\nabla h_j(\bm{x}^*)=\bm{0},\qquad
+  \mu_j\geq0,\qquad \mu_jh_j(\bm{x}^*)=0.
+  \label{eq:kkt}
+\end{equation}
+
+当目标函数是凸函数、可行域是凸集时，KKT 条件不仅是必要条件，也是充分条件。这一性质决定了内点法和序列二次规划能否给出全局最优解，正文应明确所求解问题的凸性。
+\begin{equation}
+  f(\theta\bm{x}+(1-\theta)\bm{y})
+  \leq\theta f(\bm{x})+(1-\theta)f(\bm{y}),\qquad \theta\in[0,1].
+  \label{eq:convexity}
+\end{equation}
+
+\subsection{矩阵分解与谱}
+
+对称正定矩阵的特征分解把二次型化为平方和，条件数衡量问题对扰动的敏感程度。谱半径同时决定迭代格式是否收敛，因此它既出现在数值分析里，也出现在稳定性讨论中。
+\begin{equation}
+  \bm{A}=\bm{Q}\bm{\Lambda}\bm{Q}^{\mathsf T},\qquad
+  \bm{A}\bm{q}_i=\lambda_i\bm{q}_i,\qquad
+  \bm{x}^{\mathsf T}\bm{A}\bm{x}
+  =\sum_{i=1}^{n}\lambda_i(\bm{q}_i^{\mathsf T}\bm{x})^2.
+  \label{eq:eigen}
+\end{equation}
+
+一般矩阵用奇异值分解。截断较小的奇异值就是在最小二乘意义下取得最优的低秩近似，这一点在模型降阶和参数矩阵压缩中直接使用。
+\begin{equation}
+  \bm{A}=\bm{U}\bm{\Sigma}\bm{V}^{\mathsf T}
+  =\sum_{i=1}^{r}\sigma_i\bm{u}_i\bm{v}_i^{\mathsf T},\qquad
+  \kappa(\bm{A})=\frac{\sigma_{\max}}{\sigma_{\min}}.
+  \label{eq:svd}
+\end{equation}
+
+\subsection{不等式与误差估计}
+
+推导误差上界时常用的几个不等式如下。它们给出的是最坏情况估计，实际误差通常更小，因此正文应说明估计的保守程度，而不应把上界当作实际误差报告。
+\begin{equation}
+  |\bm{x}^{\mathsf T}\bm{y}|
+  \leq\|\bm{x}\|_2\|\bm{y}\|_2,\qquad
+  \left(\sum_{i=1}^{n}a_ib_i\right)^2
+  \leq\left(\sum_{i=1}^{n}a_i^2\right)
+       \left(\sum_{i=1}^{n}b_i^2\right).
+  \label{eq:cauchy-schwarz}
+\end{equation}
+\begin{equation}
+  \varphi(\mathbb{E}[X])\leq\mathbb{E}[\varphi(X)]
+  \quad(\varphi\text{ 为凸函数}),\qquad
+  \|\bm{x}+\bm{y}\|\leq\|\bm{x}\|+\|\bm{y}\|.
+  \label{eq:jensen}
+\end{equation}
+
+把上述工具组合起来，可以给出数值解与真解之差的先验估计。下式中右端的第一项来自截断误差，第二项来自数据误差，二者随网格加密的下降速度不同，因此需要分别报告。
+\begin{equation}
+  \|\bm{u}_h-\bm{u}\|\leq C_1h^p+C_2\delta,\qquad
+  \delta=\frac{\|\bm{y}-\bm{y}_{\mathrm{true}}\|}
+  {\|\bm{y}_{\mathrm{true}}\|}.
+  \label{eq:error-bound}
+\end{equation}
+
+\section{本章小结}
+
+本章示例给出了理论基础、概率模型、参数设置以及中文定理环境的组织方式。定理环境的视觉样式属于内容层扩展，不会修改模板的页眉、正文间距或章节编号规则。

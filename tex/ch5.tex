@@ -1,1 +1,318 @@
 \chapter{超音速牛奶喷射与时间旅行的应用前景}
+
+本章讨论模型从实验分析走向应用时需要补充的工程环节。应用前景不能只写成愿景，还应明确输入、处理、决策、异常处理和输出之间的对应关系，并说明哪些结论仍然依赖实验条件。
+
+\section{应用场景}
+
+\subsection{食品加工}
+
+在食品加工场景中，喷射速度、温度和黏度共同决定输送稳定性。实际部署时，控制器需要根据在线传感器估计当前状态，再决定是否调整喷嘴压力或暂停生产。因此，论文应同时报告稳态性能和扰动恢复时间，而不应只报告理想工况下的峰值效率。
+
+\subsection{时空导航}
+
+时空导航场景更关心状态预测和不确定性传播。模型输出不能只给出一个时间点，而应给出预测区间、置信水平和异常状态的处理策略。对于跨设备部署，还要明确时间同步误差、通信延迟和模型更新周期。
+
+\subsection{数据处理算法}
+
+论文描述数值求解、实验处理或数据筛选过程时，可以把关键步骤整理为带缩进和行号的伪代码。算法~\ref{alg:response}与前文的状态模型对应，强调执行顺序而不是某一种编程语言的语法。
+\begin{algorithm}[htbp]
+  \caption{概率响应估计算法}
+  \label{alg:response}
+  \begin{algorithmic}[1]
+    \REQUIRE 观测序列 $\bm{y}_1,\ldots,\bm{y}_n$，参数 $\theta$，异常阈值 $\epsilon$
+    \ENSURE 估计状态 $\hat{\bm{x}}_1,\ldots,\hat{\bm{x}}_n$ 与异常标记
+    \STATE 读取观测序列与参数 $\theta$
+    \STATE 初始化状态 $\bm{x}_0$ 和协方差 $\bm{P}_0$
+    \FOR{$k=1,2,\ldots,n$}
+      \STATE 预测状态并计算残差
+      \STATE 更新状态与置信区间
+      \IF{残差超过阈值 $\epsilon$}
+        \STATE 标记异常观测，并记录观测序号
+      \ENDIF
+    \ENDFOR
+    \STATE 输出状态序列与异常记录
+  \end{algorithmic}
+\end{algorithm}
+
+算法~\ref{alg:response}中的阈值、状态转移矩阵和协方差更新公式应在正文中分别定义。这样读者能够把伪代码中的每一步追溯到模型假设，而不会把算法框误认为不可复现的流程装饰。
+
+\subsection{流程示意图}
+
+伪代码强调步骤顺序，流程图则适合说明分支和反馈关系。图~\ref{fig:process}给出数据读取、参数估计、异常重试和结果输出之间的关系。
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[scale=0.88,transform shape,>=Stealth,node distance=15mm,
+    block/.style={draw,rounded corners,align=center,minimum width=27mm,minimum height=10mm},
+    decision/.style={draw,diamond,aspect=2,align=center,inner sep=2pt}]
+    \node[block,fill=blue!7] (read) {读取数据};
+    \node[block,fill=teal!7,right=of read] (estimate) {估计参数};
+    \node[decision,right=of estimate] (check) {误差满足\\阈值？};
+    \node[block,fill=yellow!12,right=of check] (output) {输出结果};
+    \node[block,fill=orange!10,below=13mm of check] (retry) {调整步长};
+    \draw[->] (read)--(estimate);
+    \draw[->] (estimate)--(check);
+    \draw[->] (check)--node[above] {是}(output);
+    \draw[->] (check)--node[right] {否}(retry);
+    \draw[->] (retry.west)-| (read.south);
+  \end{tikzpicture}
+  \caption{带异常重试的参数估计流程}
+  \label{fig:process}
+\end{figure}
+
+\subsection{模块接口关系}
+
+当论文需要强调模块接口而不是几何位置时，可以用紧凑的节点和箭头表达状态转移。图~\ref{fig:module-interface}把数据采集、估计和决策模块按执行顺序连接起来。示意图应控制在版心宽度以内，并通过正文解释节点含义，不能把图例文字全部塞进图内。
+\begin{figure}[htbp]
+  \centering
+  \begin{tikzpicture}[>=Stealth,node distance=18mm,
+    module/.style={draw,rounded corners,fill=gray!10,minimum width=25mm,minimum height=10mm,align=center}]
+    \node[module] (collect) {采集};
+    \node[module,right=of collect] (estimate) {估计};
+    \node[module,right=of estimate] (decision) {决策};
+    \draw[->,thick] (collect)--(estimate);
+    \draw[->,thick] (estimate)--(decision);
+  \end{tikzpicture}
+  \caption{状态处理模块的接口关系}
+  \label{fig:module-interface}
+\end{figure}
+
+图~\ref{fig:engineering-diagrams}把六类工程结构图放在同一组中：层级架构、输入输出流程、有向网络、节点分组、UML 接口和代数结构。总题注说明共同主题，子图题注分别说明各自表达的关系；与本章论证关系不大的图可保留为独立普通图。
+\begin{figure}[htbp]
+  \centering
+  \subfigure[层级架构]{
+    \begin{tikzpicture}[>=Stealth,node distance=7mm,
+      n/.style={draw,rounded corners,align=center,minimum width=22mm}]
+      \node[n] (a) {系统}; \node[n,below left=of a] (b) {采集}; \node[n,below right=of a] (c) {分析};
+      \draw[->] (a)--(b); \draw[->] (a)--(c);
+    \end{tikzpicture}}
+  \hfill
+  \subfigure[输入输出流程]{
+    \begin{tikzpicture}[>=Stealth,node distance=5mm,
+      n/.style={draw,align=center,minimum width=17mm,minimum height=7mm}]
+      \node[n] (a) {输入}; \node[n,right=of a] (b) {处理}; \node[n,right=of b] (c) {输出};
+      \draw[->] (a)--(b); \draw[->] (b)--(c);
+    \end{tikzpicture}}
+  \\
+  \subfigure[有向网络]{
+    \begin{tikzpicture}[>=Stealth,node distance=10mm,
+      n/.style={draw,circle,inner sep=2pt}]
+      \node[n] (a) {$A$}; \node[n,right=of a] (b) {$B$}; \node[n,below=of a] (c) {$C$};
+      \node[n,below=of b] (d) {$D$};
+      \draw[->] (a)--(b); \draw[->] (a)--(c); \draw[->] (c)--(d); \draw[->] (b)--(d);
+    \end{tikzpicture}}
+  \hfill
+  \subfigure[节点分组]{
+    \begin{tikzpicture}[>=Stealth,node distance=7mm,
+      n/.style={draw,circle,inner sep=2pt}]
+      \node[n,fill=blue!12] (a) {$x_1$}; \node[n,fill=blue!12,right=of a] (b) {$x_2$};
+      \node[n,fill=orange!15,below=of a] (c) {$y_1$}; \node[n,fill=orange!15,right=of c] (d) {$y_2$};
+      \draw[->] (a)--(c); \draw[->] (b)--(d);
+    \end{tikzpicture}}
+  \\
+  \subfigure[UML 接口关系]{
+    \begin{tikzpicture}[>=Stealth,node distance=10mm,
+      n/.style={draw,align=center,minimum width=21mm,minimum height=8mm}]
+      \node[n] (a) {Observer\\+ read()};
+      \node[n,right=of a] (b) {Estimator\\+ update()};
+      \draw[->] (a)--node[above] {data}(b);
+    \end{tikzpicture}}
+  \hfill
+  \subfigure[代数结构层级]{
+    \begin{tikzpicture}[>=Stealth,node distance=7mm,
+      n/.style={draw,rounded corners,align=center,minimum width=20mm}]
+      \node[n] (a) {向量空间}; \node[n,below=of a] (b) {内积空间};
+      \node[n,below=of b] (c) {Hilbert 空间};
+      \draw[->] (a)--(b); \draw[->] (b)--(c);
+    \end{tikzpicture}}
+  \caption{工程模块图组：架构、流程、网络、分组、接口与代数层级}
+  \label{fig:engineering-diagrams}
+\end{figure}
+
+\section{数据处理与评估}
+
+\subsection{滤波与谱分析}
+
+实测信号总含有测量噪声，因此进入参数估计之前需要先做滤波。滑动平均是最简单的低通滤波，一阶惯性环节则给出可解析的传递函数，二者都应在正文中说明截止频率与相位滞后。
+\begin{equation}
+  \hat{y}_k=\frac{1}{2m+1}\sum_{j=-m}^{m}y_{k+j},\qquad
+  H(\omega)=\frac{1}{1+\mathrm{i}\omega\tau},\qquad
+  |H(\omega)|=\frac{1}{\sqrt{1+(\omega\tau)^2}}.
+  \label{eq:filters}
+\end{equation}
+
+功率谱密度把信号的方差按频率分解，用于判断周期性扰动来自哪一频段。估计谱时需要说明窗函数和平均段数，否则峰值会被泄漏和方差掩盖。
+\begin{equation}
+  S(\omega)=\lim_{T\to\infty}\frac{1}{T}
+  \left|\int_0^T y(t)e^{-\mathrm{i}\omega t}\,\mathrm{d}t\right|^2,\qquad
+  \int_{-\infty}^{\infty}S(\omega)\,\mathrm{d}\omega=\operatorname{Var}[y].
+  \label{eq:psd}
+\end{equation}
+
+离散频谱的可用范围由采样定理限定，混叠一旦发生就无法通过后处理恢复。工程上通常在采样前加模拟低通滤波，并在正文中给出抗混叠滤波器的参数。
+\begin{equation}
+  \omega_{\mathrm{Nyquist}}=\pi f_s,\qquad
+  f_s=\frac{1}{\Delta t},\qquad f_s>2f_{\max}.
+  \label{eq:nyquist}
+\end{equation}
+
+\subsection{指标与不确定度}
+
+测量结果的不确定度由各输入量的不确定度按灵敏度系数合成。输入量之间相关时必须保留协方差项，只有相互独立时才能把平方和简化成对角线形式。
+\begin{equation}
+  u_c^2(y)=
+  \sum_{i=1}^{n}\left(\frac{\partial f}{\partial x_i}\right)^2u^2(x_i)
+  +2\sum_{i<j}\frac{\partial f}{\partial x_i}
+  \frac{\partial f}{\partial x_j}r_{ij}u(x_i)u(x_j).
+  \label{eq:uncertainty-propagation}
+\end{equation}
+\begin{equation}
+  u_c(y)=\sqrt{\sum_{i=1}^{n}
+  \left(\frac{\partial f}{\partial x_i}\right)^2u^2(x_i)},\qquad
+  U=ku_c,\qquad k=2,\qquad P\approx95\%.
+  \label{eq:expanded-uncertainty}
+\end{equation}
+
+评估指标必须成组报告：单看平均误差会掩盖大偏差样本，单看最大误差又会被个别异常值主导。表~\ref{tab:metrics}给出示例中使用的指标及其适用条件。
+\begin{table}[htbp]
+  \centering
+  \caption{评估指标的定义与适用条件}
+  \label{tab:metrics}
+  \begin{tabularx}{\textwidth}{>{\centering\arraybackslash}p{0.16\textwidth}X X}
+    \toprule
+    \textbf{指标} & \textbf{定义} & \textbf{适用条件}\\
+    \midrule
+    RMSE & 误差平方均值的平方根 & 重视大偏差、误差近似对称\\
+    MAE & 绝对误差的平均值 & 存在异常值、需要稳健性\\
+    $R^2$ & 残差平方和与总平方和之比 & 需要与基线模型比较\\
+    覆盖率 & 真值落入区间的比例 & 报告区间估计的可靠性\\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+偏差与精密度是两类不同的误差。前者反映系统性偏离，可以通过标定消除；后者反映随机分散，只能通过增加样本量或改进测量链降低。
+\begin{equation}
+  \mathrm{bias}=\frac{1}{n}\sum_{i=1}^{n}(\hat{y}_i-y_i),\qquad
+  s=\sqrt{\frac{1}{n-1}\sum_{i=1}^{n}
+  \left(\hat{y}_i-\overline{\hat{y}}\right)^2}.
+  \label{eq:bias-precision}
+\end{equation}
+
+\subsection{带单位表头与表注的表}
+
+单位写在表头里比写在每个数据后面更紧凑，也便于整列换算；表注放在表体下方、与表同属一个浮动体，用于说明数据来源、符号含义和保留位数。
+\begin{table}[htbp]
+  \centering
+  \caption{带单位表头与表注的参数表}
+  \label{tab:units}
+  \begin{tabular}{ccccc}
+    \toprule
+    \textbf{工况} & $v_0$/(\si{\meter\per\second}) & $p_0$/\si{\kilo\pascal} & $T_0$/\si{\kelvin} & 样本量 $n$\\
+    \midrule
+    工况 A & 340.0 & 101.3 & 298.1 & 12\\
+    工况 B & 352.5 & 104.7 & 301.4 & 12\\
+    工况 C & 361.2 & 98.6 & 296.3 & 15\\
+    工况 D & 375.8 & 107.2 & 303.9 & 15\\
+    \bottomrule
+  \end{tabular}
+
+  \smallskip
+  \begin{minipage}{0.9\textwidth}\footnotesize
+    注：表中为示例数据，$v_0$ 为喷嘴出口速度，$p_0$ 与 $T_0$ 为滞止参数；保留位数按仪器分辨力给出。
+  \end{minipage}
+\end{table}
+
+\subsection{并排小表}
+
+两组独立的对照数据可以并排放在一个版面中，各自保留表号、表题和三线。并排时应保证合计宽度不超过版心；表格内容较多时不要并排，以免单个单元格过窄而频繁换行。
+\begin{center}
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \captionsetup{type=table}
+    \caption{两组工况的误差指标}
+    \label{tab:metrics-ab}
+    \begin{tabular}{ccc}
+      \toprule
+      指标 & 工况 A & 工况 B\\
+      \midrule
+      RMSE & 0.0241 & 0.0198\\
+      MAE & 0.0187 & 0.0152\\
+      $R^2$ & 0.961 & 0.973\\
+      \bottomrule
+    \end{tabular}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.48\textwidth}
+    \centering
+    \captionsetup{type=table}
+    \caption{另外两组工况的误差指标}
+    \label{tab:metrics-cd}
+    \begin{tabular}{ccc}
+      \toprule
+      指标 & 工况 C & 工况 D\\
+      \midrule
+      RMSE & 0.0212 & 0.0175\\
+      MAE & 0.0163 & 0.0138\\
+      $R^2$ & 0.968 & 0.979\\
+      \bottomrule
+    \end{tabular}
+  \end{minipage}
+\end{center}
+
+\subsection{计算复杂度与资源}
+
+把模型部署到在线设备上时，需要同时说明时间复杂度和存储需求。下式给出按网格数估计的计算量与吞吐率关系，正文中应给出实测值与估计值的差异，而不应只给阶数。
+\begin{equation}
+  T(n)=Cn^3,\qquad M(n)=4n^2\ \text{字节},\qquad
+  t_{\mathrm{step}}=\frac{T(n)}{\text{throughput}},\qquad
+  E=Pt_{\mathrm{step}}.
+  \label{eq:complexity}
+\end{equation}
+
+迭代求解的终止条件也需要量化。常用的判据是相对残差或参数增量小于给定阈值，阈值应与测量不确定度相当，过严的阈值只会增加迭代次数而不改善结果。
+\begin{equation}
+  \frac{\|\bm{r}^{(k)}\|}{\|\bm{b}\|}<\epsilon_{\mathrm{rel}},\qquad
+  \frac{\|\bm{\theta}^{(k+1)}-\bm{\theta}^{(k)}\|}
+  {\|\bm{\theta}^{(k)}\|}<\epsilon_{\mathrm{step}}.
+  \label{eq:stopping}
+\end{equation}
+
+\subsection{置信区间估计算法}
+
+算法~\ref{alg:bootstrap}给出重采样置信区间的处理流程。该方法不假设统计量的解析分布，因此在指标分布未知时比正态近似更稳健；代价是需要重复求解，重采样次数应按目标精度选择。
+\begin{algorithm}[htbp]
+  \caption{重采样置信区间估计}
+  \label{alg:bootstrap}
+  \begin{algorithmic}[1]
+    \REQUIRE 样本 $\bm{y}_1,\ldots,\bm{y}_n$，置信水平 $1-\alpha$，重采样次数 $B$
+    \ENSURE 区间估计 $[\hat{\theta}_{\mathrm{low}},\hat{\theta}_{\mathrm{high}}]$ 与相对半宽
+    \STATE 计算样本统计量 $\hat{\theta}$ 与残差标准差 $\hat{\sigma}$
+    \FOR{$b=1,2,\ldots,B$}
+      \STATE 有放回抽取 $n$ 个样本，得到重采样样本 $\bm{y}^{(b)}$
+      \STATE 在重采样样本上重新求解模型，得到 $\hat{\theta}_b$
+      \IF{$\hat{\theta}_b$ 超出当前区间}
+        \STATE 更新区间端点，并累计越界次数
+      \ENDIF
+    \ENDFOR
+    \STATE 取重采样统计量的 $\alpha/2$ 与 $1-\alpha/2$ 分位数
+    \IF{相对半宽大于 $\epsilon$}
+      \STATE 增大 $B$ 后重新执行重采样
+    \ENDIF
+    \STATE 输出区间、相对半宽与越界次数
+  \end{algorithmic}
+\end{algorithm}
+
+算法~\ref{alg:bootstrap}的输出包含相对半宽，便于判断重采样次数是否足够；若半宽仍大于容差，应在正文中说明是样本量不足还是模型本身对扰动敏感。
+
+\section{风险与展望}
+
+\subsection{工程限制}
+
+应用研究需要同时说明设备、材料、环境和伦理等方面的约束，避免把理论推演直接表述为工程结论。模型上线前还应完成独立数据验证、异常场景测试和版本归档。
+
+\subsection{可复现性}
+
+建议在附录或项目仓库中保存原始数据摘要、参数文件、算法版本和编译环境。图表应由固定输入重新生成，正文中只保留经过解释的结果；这样模板替换成真实论文内容后，章节结构仍然稳定。
+
+\section{本章小结}
+
+本章用算法环境表达计算步骤，用 TikZ 表达带反馈的流程和模块接口。图表与伪代码共同服务于方法说明；替换为真实研究内容时，应把输入、阈值、输出和异常处理与实际实现逐项核对。
