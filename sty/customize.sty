@@ -44,13 +44,6 @@
 \captionsetup[subfigure]{font=footnotesize,justification=centering,
   labelformat=parens,labelsep=space}
 
-% Set display skips after CTeX applies \normalsize at document start.
-\AddToHook{begindocument/end}[njusttt-display-spacing]{%
-  \setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}%
-  \setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}%
-  \setlength{\abovedisplayshortskip}{6pt plus 2pt minus 2pt}%
-  \setlength{\belowdisplayshortskip}{6pt plus 2pt minus 2pt}%
-}
 \setlength{\abovecaptionskip}{0pt}
 \setlength{\belowcaptionskip}{-2pt}
 

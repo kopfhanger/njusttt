@@ -20,6 +20,26 @@
 %% package infomation
 \RequirePackage{fancyhdr}      % page header/footer package
 \RequirePackage{mathtools,amsthm,amsfonts,amssymb,bm}      % math packages
+
+%% Keep display-math spacing uniform after every CTeX font-size switch.
+\newcommand{\NJUST@setdisplaymathspacing}{%
+    \setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}%
+    \setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}%
+    \setlength{\abovedisplayshortskip}{6pt plus 2pt minus 2pt}%
+    \setlength{\belowdisplayshortskip}{6pt plus 2pt minus 2pt}%
+}
+\AddToHook{cmd/normalsize/after}[njusttt-display-spacing]{\NJUST@setdisplaymathspacing}
+\AddToHook{cmd/small/after}[njusttt-display-spacing]{\NJUST@setdisplaymathspacing}
+\AddToHook{cmd/footnotesize/after}[njusttt-display-spacing]{\NJUST@setdisplaymathspacing}
+\AddToHook{cmd/scriptsize/after}[njusttt-display-spacing]{\NJUST@setdisplaymathspacing}
+\AddToHook{cmd/tiny/after}[njusttt-display-spacing]{\NJUST@setdisplaymathspacing}
+\AddToHook{cmd/large/after}[njusttt-display-spacing]{\NJUST@setdisplaymathspacing}
+\AddToHook{cmd/Large/after}[njusttt-display-spacing]{\NJUST@setdisplaymathspacing}
+\AddToHook{cmd/LARGE/after}[njusttt-display-spacing]{\NJUST@setdisplaymathspacing}
+\AddToHook{cmd/huge/after}[njusttt-display-spacing]{\NJUST@setdisplaymathspacing}
+\AddToHook{cmd/Huge/after}[njusttt-display-spacing]{\NJUST@setdisplaymathspacing}
+\AddToHook{begindocument/end}[njusttt-display-spacing]{\NJUST@setdisplaymathspacing}
+\NJUST@setdisplaymathspacing
 \RequirePackage{graphicx,psfrag,flafter}      % graphics packages
 
 
