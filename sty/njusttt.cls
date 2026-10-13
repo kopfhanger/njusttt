@@ -23,10 +23,10 @@
 
 %% Keep display-math spacing uniform after every CTeX font-size switch.
 \newcommand{\NJUST@setdisplaymathspacing}{%
-    \setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}%
-    \setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}%
-    \setlength{\abovedisplayshortskip}{6pt plus 2pt minus 2pt}%
-    \setlength{\belowdisplayshortskip}{6pt plus 2pt minus 2pt}%
+    \setlength{\abovedisplayskip}{3pt plus 1pt minus 1pt}%
+    \setlength{\belowdisplayskip}{3pt plus 1pt minus 1pt}%
+    \setlength{\abovedisplayshortskip}{3pt plus 1pt minus 1pt}%
+    \setlength{\belowdisplayshortskip}{3pt plus 1pt minus 1pt}%
 }
 \AddToHook{cmd/normalsize/after}[njusttt-display-spacing]{\NJUST@setdisplaymathspacing}
 \AddToHook{cmd/small/after}[njusttt-display-spacing]{\NJUST@setdisplaymathspacing}
